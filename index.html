@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eng. Ademilton Pavan | Engenharia SST</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        premiumGold: '#D4AF37',
+                        darkBg: '#0A0A0A',
+                    },
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #000; 
+            font-family: 'Montserrat', sans-serif; 
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+
+        .service-card:active { transform: scale(0.98); }
+        
+        .bg-main {
+            background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body class="min-h-screen flex flex-col items-center py-8 px-4">
+    
+    <!-- Background Fixed -->
+    <div class="fixed inset-0 z-[-1] bg-main">
+        <div class="absolute inset-0 bg-black/85 backdrop-blur-sm"></div>
+    </div>
+
+    <!-- Main Container -->
+    <main id="app-container" class="w-full max-w-md glass rounded-[3rem] p-8 shadow-2xl opacity-0 translate-y-10 animate-slide-up">
+        
+        <!-- Profile Header -->
+        <div class="flex flex-col items-center text-center mb-10">
+            <div class="relative mb-6">
+                <div class="absolute -inset-2 bg-premiumGold rounded-full blur opacity-20"></div>
+                <div class="relative w-36 h-36 rounded-full border-[3px] border-premiumGold overflow-hidden shadow-2xl p-1 bg-black">
+                    <img src="foto" alt="Ademilton Pavan" class="w-full h-full object-cover rounded-full">
+                </div>
+                <div class="absolute bottom-1 right-1 bg-premiumGold w-9 h-9 rounded-full flex items-center justify-center border-4 border-black shadow-xl">
+                    <i class="fa-solid fa-shield-halved text-black text-xs"></i>
+                </div>
+            </div>
+            <h1 class="text-2xl font-black text-white mb-1 tracking-tight uppercase italic">Ademilton Pavan</h1>
+            <h2 class="text-[10px] font-bold text-premiumGold uppercase tracking-[0.3em] mb-1">Engenheiro de Segurança do Trabalho</h2>
+            <p class="text-white/40 text-[9px] font-black tracking-widest uppercase">CREA-SC 86959-8</p>
+        </div>
+
+        <!-- Action Grid -->
+        <div class="grid grid-cols-2 gap-4">
+            <a href="https://api.whatsapp.com/send?phone=5548999862981&text=Olá Ademilton, gostaria de uma consultoria em SST." target="_blank" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
+                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#25D366] shadow-lg group-hover:scale-110 transition-transform">
+                    <i class="fa-brands fa-whatsapp text-white text-xl"></i>
+                </div>
+                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">WhatsApp</span>
+            </a>
+            <a href="https://maps.app.goo.gl/6znCJWxwKk97GeS88" target="_blank" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
+                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#4285F4] shadow-lg group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-location-dot text-white text-xl"></i>
+                </div>
+                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">Localização</span>
+            </a>
+            <a href="mailto:apavaneng@gmail.com" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
+                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#EA4335] shadow-lg group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-envelope text-white text-xl"></i>
+                </div>
+                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">E-mail</span>
+            </a>
+            <button onclick="toggleModal('modal-nrs', true)" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
+                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#D4AF37] shadow-lg group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-book-open-reader text-white text-xl"></i>
+                </div>
+                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">Normas NRs</span>
+            </button>
+        </div>
+
+        <!-- Save Contact Button -->
+        <button onclick="downloadVCard()" class="w-full mt-6 mb-8 py-5 bg-premiumGold text-black font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-premiumGold/20 active:scale-95 transition-all text-[11px] tracking-widest uppercase">
+            <i class="fa-solid fa-address-book text-lg"></i>
+            Salvar Contato
+        </button>
+
+        <!-- Services Section Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-[10px] font-black text-premiumGold uppercase tracking-[0.3em] flex items-center gap-2">
+                <span class="w-8 h-[2px] bg-premiumGold/40"></span>
+                Serviços Especializados
+            </h3>
+            <button onclick="toggleModal('modal-form', true)" class="text-[9px] bg-white/10 hover:bg-premiumGold hover:text-black text-white px-4 py-2 rounded-full transition-all border border-white/10 font-black uppercase">
+                <i class="fa-solid fa-plus mr-1"></i> Add
+            </button>
+        </div>
+
+        <!-- Services List Container -->
+        <div id="services-list" class="space-y-4">
+            <!-- Services will be injected here via JS -->
+        </div>
+        
+        <!-- Footer Info -->
+        <div class="mt-12 text-center opacity-30">
+            <p class="text-[8px] uppercase tracking-[0.4em] font-bold">Tecnologia & Segurança do Trabalho</p>
+        </div>
+    </main>
+
+    <!-- Modal: Normas NRs & Checklist -->
+    <div id="modal-nrs" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 animate-fade-in">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="toggleModal('modal-nrs', false)"></div>
+        <div class="relative w-full max-w-md bg-neutral-950 border border-white/10 rounded-[3rem] p-8 max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            
+            <div id="nr-header" class="flex justify-between items-center mb-6 relative z-10">
+                <div>
+                    <h2 id="nr-title" class="text-xl font-black text-white uppercase italic tracking-tight">Normas NRs</h2>
+                    <p id="nr-subtitle" class="text-[10px] text-premiumGold font-bold uppercase tracking-widest mt-1">Biblioteca Técnica SST</p>
+                </div>
+                <button onclick="toggleModal('modal-nrs', false)" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/40 hover:bg-white/10 transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div id="nr-progress-container" class="mb-6 hidden animate-fade-in">
+                <div class="flex justify-between items-end mb-2">
+                    <h3 id="checklist-nr-name" class="text-lg font-black text-white uppercase italic">Checklist</h3>
+                    <span id="checklist-progress-text" class="text-[10px] font-bold text-premiumGold">0% CONCLUÍDO</span>
+                </div>
+                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <div id="checklist-progress-bar" class="h-full bg-premiumGold shadow-[0_0_15px_rgba(212,175,55,0.5)] transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="nr-content" class="flex-1 overflow-y-auto no-scrollbar relative space-y-3">
+                <!-- NR List or Checklist injected here -->
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-white/5 text-center shrink-0">
+                <p class="text-[8px] text-white/20 uppercase tracking-[0.3em]">Auditoria & Inspeção Técnica</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Serviço -->
+    <div id="modal-form" class="fixed inset-0 z-[150] hidden items-center justify-center p-4 animate-fade-in">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="toggleModal('modal-form', false)"></div>
+        <div class="relative w-full max-w-md bg-neutral-900 border border-white/10 rounded-[3rem] p-8 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-xl font-black text-premiumGold mb-8 uppercase italic">Novo Serviço</h2>
+            <form id="service-form" class="space-y-6">
+                <input required id="form-title" placeholder="Título do Serviço" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white focus:border-premiumGold outline-none">
+                <textarea required id="form-desc" rows="3" placeholder="Descrição detalhada..." class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white focus:border-premiumGold outline-none"></textarea>
+                <div class="grid grid-cols-2 gap-4">
+                    <input id="form-nr" placeholder="Norma (ex: NR-35)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white outline-none">
+                    <div class="relative h-full border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center bg-white/5">
+                        <input type="file" accept="image/*" id="form-image" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <span id="image-label" class="text-[10px] font-black uppercase text-white/30">Anexar Foto</span>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-5 bg-premiumGold text-black font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-xl">Publicar Serviço</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Detalhes do Serviço -->
+    <div id="modal-detail" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 animate-fade-in">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="toggleModal('modal-detail', false)"></div>
+        <div class="relative w-full max-w-md bg-neutral-950 border border-white/10 rounded-[3rem] p-8 max-h-[85vh] overflow-y-auto no-scrollbar shadow-2xl">
+            <button onclick="toggleModal('modal-detail', false)" class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/40 z-10">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div id="detail-content">
+                <!-- Detail content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        let services = [];
+        let checkedItems = new Set();
+        let selectedNR = null;
+        let base64Image = '';
+
+        const nrs = [
+            { number: '01', title: 'GRO - Gerenciamento de Riscos Ocupacionais' },
+            { number: '06', title: 'EPI - Equipamentos de Proteção Individual' },
+            { number: '10', title: 'Segurança em Eletricidade' },
+            { number: '12', title: 'Máquinas e Equipamentos' },
+            { number: '18', title: 'Segurança na Indústria da Construção' },
+            { number: '33', title: 'Espaços Confinados' },
+            { number: '35', title: 'Trabalho em Altura' },
+            { number: '07', title: 'PCMSO - Controle Médico' },
+            { number: '09', title: 'Avaliação de Exposições Ocupacionais' },
+        ];
+
+        const checklists = {
+            '01': ['Inventário de Riscos atualizado?', 'Plano de Ação definido?', 'Preparação para emergências?', 'Trabalhadores treinados no GRO?'],
+            '06': ['CA válido para todos os EPIs?', 'Registro de entrega por trabalhador?', 'Treinamento de uso realizado?', 'EPIs adequados ao risco?'],
+            '10': ['Prontuário de Instalações Elétricas?', 'Diagramas unifilares atualizados?', 'Trabalhadores com curso NR-10?', 'Aterramento presente?'],
+            '12': ['Parada de emergência operacional?', 'Zonas de perigo protegidas?', 'Manuais em português?', 'Capacitação específica para operador?'],
+            '18': ['PGR da obra implementado?', 'Áreas de vivência adequadas?', 'Proteção coletiva instalada?', 'Treinamento admissional realizado?'],
+            '33': ['PET emitida?', 'Vigia posicionado fora?', 'Monitoramento atmosférico?', 'Equipamentos de resgate prontos?'],
+            '35': ['Análise de Risco assinada?', 'Pontos de ancoragem inspecionados?', 'Cinto paraquedista em uso?', 'ASO com aptidão para altura?']
+        };
+
+        const defaultServices = [
+            { id: '1', title: 'Gestão de PGR / PCMSO', description: 'Implementação técnica completa do Programa de Gerenciamento de Riscos conforme NR-01.', nrReference: 'NR-01 / NR-07', image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=800' },
+            { id: '2', title: 'Treinamento de Altura', description: 'Capacitação teórica e prática com certificação para trabalho em altura.', nrReference: 'NR-35', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=800' }
+        ];
+
+        // --- CORE LOGIC ---
+        function init() {
+            const saved = localStorage.getItem('pavan_sst_services');
+            services = saved ? JSON.parse(saved) : defaultServices;
+            renderServices();
+            renderNRList();
+        }
+
+        function toggleModal(id, show) {
+            const modal = document.getElementById(id);
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                if (id === 'modal-nrs') resetNRModal();
+            }
+        }
+
+        // --- SERVICES MANAGEMENT ---
+        function renderServices() {
+            const list = document.getElementById('services-list');
+            list.innerHTML = services.map(s => `
+                <div class="service-card relative p-5 rounded-[2rem] bg-white/5 border border-white/5 flex gap-4 items-center cursor-pointer hover:bg-white/10 transition-all active:scale-[0.98]" onclick="showDetail('${s.id}')">
+                    <div class="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 border border-white/10">
+                        <img src="${s.image}" class="w-full h-full object-cover" alt="${s.title}">
+                    </div>
+                    <div class="flex-1">
+                        <span class="text-[8px] font-black text-premiumGold uppercase tracking-tighter mb-1 block">${s.nrReference}</span>
+                        <h4 class="text-xs font-bold text-white mb-0.5 leading-tight">${s.title}</h4>
+                        <p class="text-[10px] text-white/40 line-clamp-1 italic">Toque para detalhes</p>
+                    </div>
+                    <button onclick="event.stopPropagation(); deleteService('${s.id}')" class="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 text-white/20 hover:text-red-500 transition-colors">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                </div>
+            `).join('');
+            localStorage.setItem('pavan_sst_services', JSON.stringify(services));
+        }
+
+        function deleteService(id) {
+            if (confirm('Deseja remover este serviço?')) {
+                services = services.filter(s => s.id !== id);
+                renderServices();
+            }
+        }
+
+        function showDetail(id) {
+            const s = services.find(x => x.id === id);
+            if (!s) return;
+            const container = document.getElementById('detail-content');
+            container.innerHTML = `
+                <div class="relative w-full h-48 rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/10">
+                    <img src="${s.image}" class="w-full h-full object-cover" alt="${s.title}">
+                    <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 to-transparent"></div>
+                </div>
+                <span class="text-[10px] font-black text-premiumGold uppercase tracking-[0.3em] mb-3 block">${s.nrReference} • Especialidade</span>
+                <h2 class="text-xl font-black text-white mb-4 leading-tight">${s.title}</h2>
+                <p class="text-sm text-white/60 leading-relaxed font-light italic mb-10">"${s.description}"</p>
+                <a href="https://api.whatsapp.com/send?phone=5548999862981&text=Olá Engenheiro, orçamento para: ${s.title}" target="_blank" class="w-full py-5 bg-premiumGold text-black font-black rounded-3xl flex items-center justify-center gap-3 uppercase text-[10px] tracking-widest shadow-xl">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Solicitar Orçamento
+                </a>
+            `;
+            toggleModal('modal-detail', true);
+        }
+
+        // --- FORM HANDLING ---
+        document.getElementById('form-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    base64Image = ev.target.result;
+                    document.getElementById('image-label').innerText = "Foto OK";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('service-form').onsubmit = function(e) {
+            e.preventDefault();
+            const newService = {
+                id: Date.now().toString(),
+                title: document.getElementById('form-title').value,
+                description: document.getElementById('form-desc').value,
+                nrReference: document.getElementById('form-nr').value || 'SST',
+                image: base64Image || 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=400'
+            };
+            services.unshift(newService);
+            renderServices();
+            toggleModal('modal-form', false);
+            this.reset();
+            base64Image = '';
+            document.getElementById('image-label').innerText = "Anexar Foto";
+        };
+
+        // --- NR MODAL & CHECKLIST ---
+        function renderNRList() {
+            const content = document.getElementById('nr-content');
+            content.innerHTML = nrs.map(nr => `
+                <button onclick="openChecklist('${nr.number}')" class="w-full text-left p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-4 items-center group hover:bg-white/10 hover:border-premiumGold/30 transition-all active:scale-95">
+                    <div class="w-12 h-12 rounded-xl bg-premiumGold/10 border border-premiumGold/20 flex items-center justify-center flex-shrink-0 group-hover:bg-premiumGold group-hover:text-black transition-colors">
+                        <span class="text-sm font-black text-premiumGold group-hover:text-black">NR-${nr.number}</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[11px] text-white/70 leading-snug font-medium uppercase tracking-tight group-hover:text-white transition-colors">${nr.title}</p>
+                        ${checklists[nr.number] ? '<span class="text-[8px] text-premiumGold font-bold uppercase tracking-widest mt-1 block">Possui Checklist Técnico</span>' : ''}
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-white/10 group-hover:text-premiumGold transition-colors text-xs"></i>
+                </button>
+            `).join('');
+        }
+
+        function openChecklist(nrNum) {
+            selectedNR = nrs.find(n => n.number === nrNum);
+            const items = checklists[nrNum];
+            if (!items) {
+                alert('Checklist em desenvolvimento para esta norma.');
+                return;
+            }
+
+            document.getElementById('nr-title').innerHTML = `
+                <button onclick="resetNRModal()" class="flex items-center gap-2 text-premiumGold group">
+                    <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Voltar</span>
+                </button>
+            `;
+            document.getElementById('nr-subtitle').classList.add('hidden');
+            document.getElementById('nr-progress-container').classList.remove('hidden');
+            document.getElementById('checklist-nr-name').innerText = `NR-${nrNum}`;
+            
+            renderChecklistItems(nrNum);
+            updateProgress(nrNum);
+        }
+
+        function renderChecklistItems(nrNum) {
+            const items = checklists[nrNum];
+            const content = document.getElementById('nr-content');
+            content.innerHTML = items.map((task, idx) => {
+                const id = `chk-${nrNum}-${idx}`;
+                const checked = checkedItems.has(id);
+                return `
+                    <div onclick="toggleCheck('${id}', '${nrNum}')" class="p-5 rounded-2xl border transition-all cursor-pointer flex gap-4 items-start ${checked ? 'bg-premiumGold/10 border-premiumGold/40' : 'bg-white/5 border-white/5 hover:bg-white/10'}">
+                        <div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all ${checked ? 'bg-premiumGold border-premiumGold' : 'border-white/20'}">
+                            ${checked ? '<i class="fa-solid fa-check text-black text-[10px]"></i>' : ''}
+                        </div>
+                        <p class="text-[12px] leading-relaxed font-medium transition-colors ${checked ? 'text-white' : 'text-white/60'}">${task}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleCheck(id, nrNum) {
+            if (checkedItems.has(id)) checkedItems.delete(id);
+            else checkedItems.add(id);
+            renderChecklistItems(nrNum);
+            updateProgress(nrNum);
+        }
+
+        function updateProgress(nrNum) {
+            const total = checklists[nrNum].length;
+            const checked = checklists[nrNum].filter((_, i) => checkedItems.has(`chk-${nrNum}-${i}`)).length;
+            const percent = Math.round((checked / total) * 100);
+            
+            document.getElementById('checklist-progress-text').innerText = `${percent}% CONCLUÍDO`;
+            document.getElementById('checklist-progress-bar').style.width = `${percent}%`;
+        }
+
+        function resetNRModal() {
+            document.getElementById('nr-title').innerText = "Normas NRs";
+            document.getElementById('nr-subtitle').classList.remove('hidden');
+            document.getElementById('nr-progress-container').classList.add('hidden');
+            renderNRList();
+        }
+
+        // --- UTILS ---
+        function downloadVCard() {
+            const vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:Eng. Ademilton Pavan\nORG:Pavan Engenharia SST\nTITLE:Engenheiro de Segurança do Trabalho\nTEL;TYPE=CELL:+5548999862981\nEMAIL:apavaneng@gmail.com\nNOTE:CREA-SC 86959-8\nEND:VCARD`;
+            const blob = new Blob([vCardData], { type: 'text/vcard' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Ademilton_Pavan.vcf';
+            link.click();
+        }
+
+        // --- START ---
+        window.onload = init;
+    </script>
+</body>
+</html>
