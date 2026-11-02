@@ -1,449 +1,2635 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eng. Ademilton Pavan | Engenharia SST</title>
-    
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        premiumGold: '#D4AF37',
-                        darkBg: '#0A0A0A',
-                    },
-                    fontFamily: {
-                        montserrat: ['Montserrat', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b2545">
+<meta name="description" content="APavan Engenharia — Módulo de Análise Dinâmica de Estruturas: Vibrações Livres de Sistemas de Um Grau de Liberdade (SDOF).">
+<title>APavan Engenharia — Vibrações Livres SDOF</title>
+<link rel="manifest" id="manifest-link">
+<link rel="apple-touch-icon" id="appleIcon">
+<style>
+:root{
+  --navy:#0b2545; --navy2:#12335e; --blue:#1b6ca8; --blue2:#2e86c1;
+  --cyan:#4fb3d9; --gray:#5a6b7b; --gray2:#8a99a8; --bg:#eef2f6; --card:#ffffff;
+  --line:#d8e0e8; --ok:#1e8449; --warn:#b9770e; --err:#b03a2e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",Roboto,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:#1c2833; font-size:14px; line-height:1.45;
+  -webkit-text-size-adjust:100%;
+}
+/* ---------- Cabeçalho ---------- */
+.app-header{
+  background:linear-gradient(135deg,#0b2545 0%,#12335e 55%,#1b6ca8 100%);
+  color:#fff; padding:14px 18px; display:flex; align-items:center;
+  justify-content:space-between; gap:16px; flex-wrap:wrap;
+}
+.brand{display:flex; align-items:center; gap:12px; min-width:0}
+.logo{width:48px;height:48px;flex:0 0 auto}
+.brand-name{font-weight:700;font-size:17px;letter-spacing:.4px;line-height:1.2}
+.brand-sub{font-size:11.5px;opacity:.88;line-height:1.3}
+.pill{
+  background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.28);
+  padding:5px 12px; border-radius:999px; font-size:12px; white-space:nowrap;
+}
+/* ---------- Abas ---------- */
+nav.tabs{
+  display:flex; gap:6px; overflow-x:auto; background:var(--navy);
+  padding:0 12px 10px; scrollbar-width:thin;
+}
+nav.tabs::-webkit-scrollbar{height:6px}
+nav.tabs::-webkit-scrollbar-thumb{background:#2e86c1;border-radius:3px}
+nav.tabs button{
+  font:inherit; font-size:12.5px; font-weight:600; white-space:nowrap;
+  background:rgba(255,255,255,.08); color:#cfe0ef; border:1px solid rgba(255,255,255,.12);
+  padding:8px 13px; border-radius:8px 8px 0 0; cursor:pointer; transition:.15s;
+}
+nav.tabs button:hover{background:rgba(255,255,255,.16);color:#fff}
+nav.tabs button.active{background:var(--bg); color:var(--navy); border-color:var(--bg);}
+/* ---------- Layout ---------- */
+main{padding:16px; max-width:1440px; margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block; animation:fade .18s ease}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  padding:14px 16px; box-shadow:0 1px 3px rgba(11,37,69,.06); margin-bottom:14px;
+}
+.card h2{
+  font-size:12.5px; margin:0 0 12px; color:var(--navy); text-transform:uppercase;
+  letter-spacing:.7px; border-bottom:2px solid var(--blue); padding-bottom:6px;
+  display:inline-block; font-weight:700;
+}
+.card h3{font-size:13px;color:var(--navy);margin:16px 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+/* ---------- Formulários ---------- */
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:11.5px;color:var(--gray);font-weight:700;letter-spacing:.2px}
+input,select{
+  font:inherit; padding:8px 10px; border:1px solid #cfd8e3; border-radius:7px;
+  background:#fff; color:#1c2833; width:100%; min-width:0;
+}
+input:focus,select:focus{outline:2px solid var(--blue2);outline-offset:-1px;border-color:var(--blue2)}
+input:invalid{border-color:var(--err)}
+.unitrow{display:flex;gap:6px}
+.unitrow select{width:104px;flex:0 0 auto}
+.hint{font-size:11.5px;color:var(--gray2);margin-top:4px;line-height:1.35}
+/* ---------- Botões ---------- */
+.btn{
+  font:inherit;font-weight:700;border:none;border-radius:8px;padding:10px 16px;
+  cursor:pointer;background:#e6ecf3;color:var(--navy);transition:.15s;
+}
+.btn:hover{background:#d7e1ec}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.primary:hover{background:#155a8c}
+.btn.ghost{background:#fff;border:1px solid #cfd8e3}
+.btn.ghost:hover{background:#f2f6fa}
+.btn.small{padding:6px 11px;font-size:12px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+/* ---------- KPIs ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px}
+.kpi{
+  background:#f7f9fc;border:1px solid #e0e7ef;border-left:4px solid var(--blue);
+  border-radius:8px;padding:10px 12px;
+}
+.kpi .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);font-weight:700}
+.kpi .v{font-size:19px;font-weight:700;color:var(--navy);margin-top:2px;word-break:break-word}
+.kpi .u{font-size:11px;color:var(--gray2)}
+/* ---------- Badges ---------- */
+.badge{display:inline-block;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.ok{background:#e8f6ee;color:var(--ok)}
+.badge.warn{background:#fdf3e2;color:var(--warn)}
+.badge.err{background:#fbeaea;color:var(--err)}
+.badge.info{background:#e8f1f9;color:var(--blue)}
+/* ---------- Gráficos ---------- */
+.chartbox{position:relative;background:#fff;border:1px solid #e0e7ef;border-radius:8px;padding:6px}
+canvas.plot{width:100%;height:340px;display:block;touch-action:none;cursor:crosshair}
+@media(max-width:640px){canvas.plot{height:270px}}
+.chart-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}
+/* ---------- Tabelas ---------- */
+.tbwrap{overflow-x:auto}
+table.tb{width:100%;border-collapse:collapse;font-size:13px}
+table.tb th,table.tb td{padding:7px 9px;border-bottom:1px solid #e6ecf3;text-align:left;vertical-align:top}
+table.tb th{background:#f2f6fa;color:var(--navy);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+table.tb td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.tb tr:last-child td{border-bottom:none}
+/* ---------- SVG / cálculo ---------- */
+.svgbox{background:#f7f9fc;border:1px solid #e0e7ef;border-radius:8px;padding:8px}
+.svgbox svg{width:100%;height:auto;display:block}
+.calcbox{
+  margin-top:10px;background:#0b2545;color:#d7e6f5;border-radius:8px;padding:12px 14px;
+  font-family:"Cascadia Code",Consolas,"Courier New",monospace;font-size:12.2px;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;overflow-x:auto;
+}
+.calcbox b{color:#7ec8f0}
+/* ---------- Auditoria ---------- */
+.test{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-bottom:1px solid #eef2f6}
+.test:last-child{border-bottom:none}
+.test .tname{flex:1;font-weight:600;font-size:13px}
+.test .tdet{display:block;font-weight:400;color:var(--gray);font-size:12px;margin-top:3px;font-variant-numeric:tabular-nums}
+/* ---------- Memória ---------- */
+.report{background:#fff;color:#1c2833;font-size:13px}
+.report h1{font-size:19px;color:var(--navy);margin:0 0 4px}
+.report h2{font-size:13px;color:#fff;background:var(--navy);padding:6px 10px;border-radius:4px;margin:20px 0 10px;text-transform:uppercase;letter-spacing:.6px}
+.report h3{font-size:12.5px;color:var(--blue);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.4px}
+.report .meta{color:var(--gray);font-size:12px;margin-bottom:14px}
+.report table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+.report th,.report td{border:1px solid #d8e0e8;padding:6px 8px;text-align:left}
+.report th{background:#f2f6fa;color:var(--navy)}
+.report td.num{text-align:right;font-variant-numeric:tabular-nums}
+.report .eq{background:#f7f9fc;border-left:3px solid var(--blue);padding:8px 12px;margin:8px 0;font-family:Consolas,monospace;font-size:12.5px;white-space:pre-wrap;overflow-x:auto}
+.report .note{background:#fdf3e2;border-left:3px solid var(--warn);padding:8px 12px;margin:8px 0;font-size:12px}
+.report .sig{display:flex;gap:24px;margin-top:34px;flex-wrap:wrap}
+.report .sig div{flex:1;min-width:200px;border-top:1px solid #333;padding-top:5px;font-size:12px;text-align:center;color:var(--gray)}
+.report img{max-width:100%;border:1px solid #d8e0e8;border-radius:4px;margin:6px 0}
+/* ---------- Impressão ---------- */
+#printArea{display:none}
+@media print{
+  body{background:#fff}
+  .app-header, nav.tabs, main, .app-footer, .no-print{display:none !important}
+  #printArea{display:block !important;padding:0;margin:0}
+  #printArea .pb{page-break-before:always}
+  @page{size:A4;margin:14mm}
+}
+.app-footer{
+  text-align:center;color:var(--gray2);font-size:11.5px;padding:18px 12px 26px;
+  border-top:1px solid var(--line);margin-top:20px;
+}
+.msg{padding:9px 12px;border-radius:7px;font-size:12.5px;margin-top:8px;display:none}
+.msg.show{display:block}
+.msg.err{background:#fbeaea;color:var(--err);border:1px solid #f0c6c2}
+.msg.ok{background:#e8f6ee;color:var(--ok);border:1px solid #c3e6d1}
+.msg.warn{background:#fdf3e2;color:var(--warn);border:1px solid #f0dcb4}
+</style>
+</head>
+<body>
 
-    <style>
-        body { 
-            background-color: #000; 
-            font-family: 'Montserrat', sans-serif; 
-            color: white;
-            overflow-x: hidden;
-        }
+<!-- ============================ CABEÇALHO ============================ -->
+<header class="app-header">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="61" height="61" rx="13" fill="#0b2545" stroke="#4fb3d9" stroke-width="1.6"/>
+      <path d="M13 50 L32 13 L51 50" fill="none" stroke="#4fb3d9" stroke-width="4.2" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M21.5 38 H42.5" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="32" cy="13" r="3.6" fill="#ffffff"/>
+    </svg>
+    <div>
+      <div class="brand-name">APavan Engenharia</div>
+      <div class="brand-sub">Análise Dinâmica de Estruturas · Vibrações Livres — Sistemas SDOF</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <span class="pill" id="statusPill">Aguardando cálculo</span>
+  </div>
+</header>
 
-        .glass { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-        }
+<!-- ============================ ABAS ============================ -->
+<nav class="tabs" id="tabsNav">
+  <button data-tab="modelagem" class="active">1 · Modelagem</button>
+  <button data-tab="entrada">2 · Dados de entrada</button>
+  <button data-tab="calculo">3 · Cálculo</button>
+  <button data-tab="deslocamento">4 · Deslocamento</button>
+  <button data-tab="velocidade">5 · Velocidade</button>
+  <button data-tab="aceleracao">6 · Aceleração</button>
+  <button data-tab="frequencias">7 · Frequências</button>
+  <button data-tab="amortecimento">8 · Amortecimento</button>
+  <button data-tab="energia">9 · Energia</button>
+  <button data-tab="memoria">10 · Memória de cálculo</button>
+  <button data-tab="auditoria">11 · Auditoria</button>
+  <button data-tab="exportacao">12 · Exportação</button>
+</nav>
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+<main>
 
-        .service-card:active { transform: scale(0.98); }
-        
-        .bg-main {
-            background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920');
-            background-size: cover;
-            background-position: center;
-        }
-    </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/"
+<!-- ===================== 1 · MODELAGEM ===================== -->
+<section class="tab-panel active" id="p-modelagem">
+  <div class="grid2">
+    <div class="card">
+      <h2>Modelagem da estrutura</h2>
+
+      <div class="field">
+        <label for="mType">Tipo de sistema estrutural</label>
+        <select id="mType">
+          <option value="eq">Sistema equivalente massa–mola–amortecedor</option>
+          <option value="portico" selected>Pórtico de um pavimento</option>
+          <option value="coluna">Coluna isolada com massa no topo</option>
+          <option value="silo">Silo apoiado em pilares</option>
+          <option value="massa">Massa concentrada sobre estrutura elástica</option>
+          <option value="equip">Equipamento sobre estrutura elástica</option>
+        </select>
+      </div>
+
+      <div id="grpStruct">
+        <div class="grid2">
+          <div class="field">
+            <label for="mMat">Material (módulo de elasticidade E)</label>
+            <select id="mMat">
+              <option value="30">Concreto estrutural — E = 30 GPa (referência típica)</option>
+              <option value="210">Aço estrutural — E = 210 GPa (referência típica)</option>
+              <option value="70">Alumínio — E = 70 GPa (referência típica)</option>
+              <option value="12">Madeira laminada — E = 12 GPa (referência típica)</option>
+              <option value="custom">Personalizado…</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mE">E informado (GPa)</label>
+            <input id="mE" type="number" step="any" value="30">
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="mSec">Seção transversal das colunas</label>
+            <select id="mSec">
+              <option value="ret">Retangular (b × h)</option>
+              <option value="circ">Circular (diâmetro d)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mBC">Condição de vinculação da coluna</label>
+            <select id="mBC">
+              <option value="12">Engaste–engaste (k = 12EI/L³)</option>
+              <option value="3">Engaste–livre / engaste–rótula (k = 3EI/L³)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid3" id="grpRet">
+          <div class="field"><label for="mB">b — largura (cm)</label><input id="mB" type="number" step="any" value="20"></div>
+          <div class="field"><label for="mH">h — altura na direção do movimento (cm)</label><input id="mH" type="number" step="any" value="40"></div>
+          <div class="field"><label for="mL">L — altura livre do pilar (m)</label><input id="mL" type="number" step="any" value="3"></div>
+        </div>
+        <div class="grid3" id="grpCirc" style="display:none">
+          <div class="field"><label for="mD">d — diâmetro (cm)</label><input id="mD" type="number" step="any" value="30"></div>
+          <div class="field"><label for="mL2">L — altura livre do pilar (m)</label><input id="mL2" type="number" step="any" value="3"></div>
+          <div class="field"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="mN">Número de colunas (trabalhando em paralelo)</label>
+            <input id="mN" type="number" step="1" min="1" value="4">
+          </div>
+          <div class="field">
+            <label for="mMassMode">Entrada da massa participante</label>
+            <select id="mMassMode">
+              <option value="t">Massa em toneladas (t)</option>
+              <option value="kg">Massa em quilogramas (kg)</option>
+              <option value="kN">Peso em quilonewtons (kN) → m = P/g</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="mMassVal">Valor da massa / peso participante</label>
+          <input id="mMassVal" type="number" step="any" value="80">
+          <div class="hint" id="massHint">m = 80 t = 80 000 kg (massa informada diretamente).</div>
+        </div>
+      </div>
+
+      <div id="grpEq" style="display:none">
+        <div class="hint">
+          Para o sistema equivalente, informe diretamente <b>m</b>, <b>k</b> e <b>c</b> na aba
+          <i>Dados de entrada</i>. A modelagem estrutural não é aplicada.
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="btnApplyModel">Transferir m e k para Dados de entrada</button>
+      </div>
+      <div class="msg" id="modelMsg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Esquema estrutural e rigidez equivalente</h2>
+      <div class="svgbox" id="modelSvg"></div>
+      <div class="calcbox" id="modelCalc">Informe os dados para visualizar o cálculo da rigidez.</div>
+      <div class="hint" style="margin-top:10px">
+        <b>Hipóteses:</b> vigas de rigidez infinita no nível do pavimento (diafragma rígido);
+        comportamento linear elástico; pequenos deslocamentos; massa concentrada no nível do pavimento;
+        contribuição da massa própria dos pilares desprezada, salvo indicação em contrário.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 2 · DADOS DE ENTRADA ===================== -->
+<section class="tab-panel" id="p-entrada">
+  <div class="card">
+    <h2>Dados de entrada — Sistema Internacional (SI)</h2>
+    <div class="grid3">
+      <div class="field">
+        <label for="inM">Massa equivalente m</label>
+        <div class="unitrow">
+          <input id="inM" type="number" step="any" value="80">
+          <select id="uM"><option value="kg">kg</option><option value="t" selected>t</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="inK">Rigidez equivalente k</label>
+        <div class="unitrow">
+          <input id="inK" type="number" step="any" value="12000">
+          <select id="uK"><option value="N/m">N/m</option><option value="kN/m" selected>kN/m</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="inDampMode">Modo de entrada do amortecimento</label>
+        <select id="inDampMode">
+          <option value="c">Coeficiente c</option>
+          <option value="xi" selected>Razão de amortecimento ξ</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="field" id="grpC" style="display:none">
+        <label for="inC">Coeficiente de amortecimento c</label>
+        <div class="unitrow">
+          <input id="inC" type="number" step="any" value="0">
+          <select id="uC"><option value="N·s/m">N·s/m</option><option value="kN·s/m">kN·s/m</option></select>
+        </div>
+      </div>
+      <div class="field" id="grpXi">
+        <label for="inXi">Razão de amortecimento ξ = c / c<sub>cr</sub></label>
+        <input id="inXi" type="number" step="any" min="0" value="0.05">
+        <div class="hint">ξ = 0 → não amortecido · 0 &lt; ξ &lt; 1 → subamortecido · ξ = 1 → crítico · ξ &gt; 1 → superamortecido</div>
+      </div>
+      <div class="field">
+        <label for="inU0">Deslocamento inicial u₀</label>
+        <div class="unitrow">
+          <input id="inU0" type="number" step="any" value="10">
+          <select id="uU0"><option value="m">m</option><option value="cm">cm</option><option value="mm" selected>mm</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="inV0">Velocidade inicial u̇₀</label>
+        <div class="unitrow">
+          <input id="inV0" type="number" step="any" value="0">
+          <select id="uV0"><option value="m/s" selected>m/s</option><option value="cm/s">cm/s</option><option value="mm/s">mm/s</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="field">
+        <label for="inT">Tempo total de análise (s)</label>
+        <input id="inT" type="number" step="any" value="6">
+      </div>
+      <div class="field">
+        <label for="inDt">Intervalo de integração Δt (s)</label>
+        <input id="inDt" type="number" step="any" value="0.005">
+      </div>
+      <div class="field" style="justify-content:flex-end">
+        <label>&nbsp;</label>
+        <div class="btn-row" style="margin:0">
+          <button class="btn primary" id="btnCalc">Calcular</button>
+          <button class="btn ghost" id="btnReset">Restaurar padrão</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="msg" id="inputMsg"></div>
+    <div class="hint" style="margin-top:10px">
+      O cálculo é executado automaticamente ao alterar qualquer campo (com validação).
+      A massa é sempre armazenada internamente em <b>kg</b>; o peso é convertido por m = P/g com g = 9,81 m/s².
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 3 · CÁLCULO ===================== -->
+<section class="tab-panel" id="p-calculo">
+  <div class="card">
+    <h2>Classificação do sistema</h2>
+    <div id="calcBadge"></div>
+    <div class="msg" id="calcNotice" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+    <h2>Propriedades dinâmicas</h2>
+    <div class="kpis" id="calcKpis"></div>
+  </div>
+  <div class="card">
+    <h2>Equação do movimento adotada</h2>
+    <div class="calcbox" id="calcEq">—</div>
+  </div>
+</section>
+
+<!-- ===================== 4 · DESLOCAMENTO ===================== -->
+<section class="tab-panel" id="p-deslocamento">
+  <div class="card">
+    <h2>Deslocamento u(t) × tempo</h2>
+    <div class="chartbox"><canvas class="plot" id="cvU"></canvas></div>
+    <div class="chart-tools">
+      <button class="btn small ghost" data-png="u">Exportar PNG</button>
+      <span class="hint">Roda do mouse: zoom · arraste: deslocar · duplo clique: redefinir</span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Resultados de deslocamento</h2>
+    <div class="kpis" id="kpiU"></div>
+  </div>
+</section>
+
+<!-- ===================== 5 · VELOCIDADE ===================== -->
+<section class="tab-panel" id="p-velocidade">
+  <div class="card">
+    <h2>Velocidade u̇(t) × tempo</h2>
+    <div class="chartbox"><canvas class="plot" id="cvV"></canvas></div>
+    <div class="chart-tools">
+      <button class="btn small ghost" data-png="v">Exportar PNG</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Resultados de velocidade</h2>
+    <div class="kpis" id="kpiV"></div>
+  </div>
+</section>
+
+<!-- ===================== 6 · ACELERAÇÃO ===================== -->
+<section class="tab-panel" id="p-aceleracao">
+  <div class="card">
+    <h2>Aceleração ü(t) × tempo</h2>
+    <div class="chartbox"><canvas class="plot" id="cvA"></canvas></div>
+    <div class="chart-tools">
+      <button class="btn small ghost" data-png="a">Exportar PNG</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Resultados de aceleração</h2>
+    <div class="kpis" id="kpiA"></div>
+  </div>
+</section>
+
+<!-- ===================== 7 · FREQUÊNCIAS ===================== -->
+<section class="tab-panel" id="p-frequencias">
+  <div class="card">
+    <h2>Frequências, períodos e amortecimento</h2>
+    <div class="tbwrap"><table class="tb" id="tbFreq"></table></div>
+  </div>
+  <div class="card">
+    <h2>Relações utilizadas</h2>
+    <div class="calcbox" id="freqEq">—</div>
+  </div>
+</section>
+
+<!-- ===================== 8 · AMORTECIMENTO ===================== -->
+<section class="tab-panel" id="p-amortecimento">
+  <div class="card">
+    <h2>Comparação de respostas — razões de amortecimento</h2>
+    <div class="field" style="max-width:640px">
+      <label for="xiList">Valores de ξ (separados por ponto e vírgula — vírgula decimal permitida)</label>
+      <input id="xiList" type="text" value="0; 0,03; 0,05; 0,10; 1,00; 1,50">
+    </div>
+    <div class="chartbox"><canvas class="plot" id="cvCmp"></canvas></div>
+    <div class="chart-tools">
+      <button class="btn small ghost" data-png="cmp">Exportar PNG</button>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>Decremento logarítmico</h2>
+      <div class="tbwrap"><table class="tb" id="tbDelta"></table></div>
+      <div class="hint" style="margin-top:10px">
+        Para sistemas subamortecidos: δ = 2πξ / √(1 − ξ²). A inversão fornece
+        ξ = δ / √(4π² + δ²).
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Determinação experimental de ξ</h2>
+      <div class="grid3">
+        <div class="field"><label for="ldU1">Amplitude u₁ (mesma unidade)</label><input id="ldU1" type="number" step="any" value="10"></div>
+        <div class="field"><label for="ldU2">Amplitude u₁₊ₙ</label><input id="ldU2" type="number" step="any" value="7.3"></div>
+        <div class="field"><label for="ldN">nº de ciclos n</label><input id="ldN" type="number" step="1" min="1" value="1"></div>
+      </div>
+      <div class="btn-row"><button class="btn primary small" id="btnLD">Calcular δ e ξ</button></div>
+      <div class="msg" id="ldMsg"></div>
+      <div class="calcbox" id="ldOut" style="margin-top:10px">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Picos identificados na resposta</h2>
+    <div class="tbwrap"><table class="tb" id="tbPeaks"></table></div>
+  </div>
+</section>
+
+<!-- ===================== 9 · ENERGIA ===================== -->
+<section class="tab-panel" id="p-energia">
+  <div class="card">
+    <h2>Energia × tempo</h2>
+    <div class="chartbox"><canvas class="plot" id="cvE"></canvas></div>
+    <div class="chart-tools">
+      <button class="btn small ghost" data-png="e">Exportar PNG</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Balanço energético</h2>
+    <div class="kpis" id="kpiE"></div>
+    <div class="msg" id="energyMsg" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<!-- ===================== 10 · MEMÓRIA DE CÁLCULO ===================== -->
+<section class="tab-panel" id="p-memoria">
+  <div class="card no-print">
+    <h2>Memória de cálculo</h2>
+    <div class="btn-row">
+      <button class="btn primary" id="btnPDF">Gerar PDF (imprimir / salvar como PDF)</button>
+      <button class="btn ghost" id="btnRefreshMem">Atualizar memória</button>
+    </div>
+    <div class="hint" style="margin-top:8px">
+      O PDF é gerado pela função de impressão do navegador. Em “Destino”, selecione
+      <b>Salvar como PDF</b>. Os gráficos são inseridos como imagens na página de impressão.
+    </div>
+  </div>
+  <div class="card">
+    <div class="report" id="memoriaView"></div>
+  </div>
+</section>
+
+<!-- ===================== 11 · AUDITORIA ===================== -->
+<section class="tab-panel" id="p-auditoria">
+  <div class="card">
+    <h2>Auditoria e verificação numérica</h2>
+    <div class="btn-row"><button class="btn primary" id="btnAudit">Executar testes</button></div>
+    <div class="msg" id="auditMsg" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+    <h2>Resultados dos testes</h2>
+    <div id="auditList"></div>
+  </div>
+</section>
+
+<!-- ===================== 12 · EXPORTAÇÃO ===================== -->
+<section class="tab-panel" id="p-exportacao">
+  <div class="grid2">
+    <div class="card">
+      <h2>Exportação de dados</h2>
+      <div class="btn-row">
+        <button class="btn primary" id="btnExportJSON">Exportar JSON</button>
+        <button class="btn ghost" id="btnImportJSON">Importar JSON</button>
+        <input type="file" id="fileJSON" accept="application/json,.json" style="display:none">
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost" id="btnExportCSV">Exportar série temporal (CSV)</button>
+      </div>
+      <div class="msg" id="exportMsg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Aplicativo (PWA)</h2>
+      <div id="pwaStatus" class="hint"></div>
+      <div class="btn-row">
+        <button class="btn primary" id="btnInstall" style="display:none">Instalar aplicativo</button>
+        <button class="btn ghost" id="btnClear">Limpar dados salvos</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Manual básico de utilização</h2>
+    <div class="report" style="font-size:13px">
+      <ol style="padding-left:20px;line-height:1.75">
+        <li><b>Modelagem (aba 1):</b> escolha o tipo de sistema. Para modelos estruturais, informe material,
+            seção, altura livre, número de colunas e a massa participante. A rigidez equivalente é calculada
+            e exibida com memória. Use <i>Transferir m e k</i> para levar os valores à aba 2.</li>
+        <li><b>Dados de entrada (aba 2):</b> ajuste m, k, amortecimento (c ou ξ), condições iniciais,
+            tempo total e Δt. O cálculo é automático.</li>
+        <li><b>Cálculo (aba 3):</b> confira a classificação do sistema (não amortecido, sub, crítico ou
+            superamortecido) e as propriedades dinâmicas.</li>
+        <li><b>Abas 4 a 6:</b> gráficos interativos de deslocamento, velocidade e aceleração.
+            Roda do mouse amplia, arrastar desloca, duplo clique redefine.</li>
+        <li><b>Frequências (aba 7):</b> tabela completa com ω, f, T, ω_d, f_d, T_d, c_cr e ξ.</li>
+        <li><b>Amortecimento (aba 8):</b> comparação entre razões de amortecimento, decremento logarítmico
+            e determinação experimental de ξ.</li>
+        <li><b>Energia (aba 9):</b> energia cinética, potencial elástica e total, com verificação de
+            conservação para sistemas não amortecidos.</li>
+        <li><b>Memória de cálculo (aba 10):</b> relatório técnico completo; gere o PDF pelo diálogo de impressão.</li>
+        <li><b>Auditoria (aba 11):</b> executa os testes de verificação numérica e de consistência.</li>
+        <li><b>Exportação (aba 12):</b> JSON, CSV, PNG dos gráficos e instalação como aplicativo.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Hipóteses e limitações</h2>
+    <div class="report" style="font-size:13px">
+      <ul style="padding-left:20px;line-height:1.75">
+        <li>O módulo trata exclusivamente de <b>vibração livre</b> de sistemas idealizados de
+            <b>um grau de liberdade</b> (SDOF), conforme a formulação m·ü + c·u̇ + k·u = 0.</li>
+        <li>Não realiza análise sísmica, análise modal completa de edifícios, análise dinâmica não linear
+            nem vibração forçada.</li>
+        <li>Estruturas com múltiplos graus de liberdade exigem um módulo MDOF com matrizes de massa,
+            rigidez e amortecimento — fora do escopo deste aplicativo.</li>
+        <li>Não há verificação automática de conformidade normativa. Coeficientes de amortecimento e
+            propriedades de materiais devem ser fornecidos e justificados pelo usuário.</li>
+        <li>A rigidez lateral k = 12EI/L³ pressupõe coluna com rotação impedida nas duas extremidades;
+            para topo livre ou rótula utiliza-se k = 3EI/L³.</li>
+        <li>O amortecimento é do tipo viscoso linear equivalente.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="app-footer">
+  APavan Engenharia e Consultoria · Módulo de Análise Dinâmica de Estruturas — Vibrações Livres SDOF ·
+  Resultados válidos apenas dentro das hipóteses declaradas.
+</footer>
+
+<!-- Área exclusiva de impressão (PDF) -->
+<div id="printArea"></div>
+
+<script>
+"use strict";
+/* ==========================================================================
+   APavan Engenharia — Módulo de Análise Dinâmica de Estruturas
+   Vibrações Livres — Sistemas de Um Grau de Liberdade (SDOF)
+   Equação geral: m·ü(t) + c·u̇(t) + k·u(t) = 0
+   ========================================================================== */
+
+/* ==========================================================================
+   1. UTILITÁRIOS
+   ========================================================================== */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const G_ACC = 9.81;                       // aceleração da gravidade (m/s²)
+
+/** Formatação numérica pt-BR com notação científica automática. */
+function fmt(v, d = 4) {
+  if (v === null || v === undefined || Number.isNaN(v)) return '—';
+  if (!isFinite(v)) return v > 0 ? '∞' : '−∞';
+  const a = Math.abs(v);
+  if (a !== 0 && (a < 1e-4 || a >= 1e6)) return v.toExponential(3);
+  return v.toLocaleString('pt-BR', { maximumFractionDigits: d });
+}
+/** Converte um número para exibição com unidade. */
+function fmtU(v, u, d = 4) { return fmt(v, d) + (u ? ' ' + u : ''); }
+/** Lê um input numérico aceitando vírgula decimal. */
+function num(sel) {
+  const el = $(sel);
+  if (!el) return NaN;
+  const v = parseFloat(String(el.value).trim().replace(',', '.'));
+  return isFinite(v) ? v : NaN;
+}
+/** Escapa texto para inserção segura em HTML. */
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+/** Gera ticks "bonitos" para eixos de gráficos. */
+function niceStep(range, count) {
+  if (!isFinite(range) || range <= 0) return 1;
+  const raw = range / Math.max(1, count);
+  const exp = Math.floor(Math.log10(raw));
+  const f = raw / Math.pow(10, exp);
+  const nf = f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10;
+  return nf * Math.pow(10, exp);
+}
+function makeTicks(min, max, count = 6) {
+  if (!isFinite(min) || !isFinite(max)) return [0, 1];
+  if (min === max) { min -= 1; max += 1; }
+  const step = niceStep(max - min, count);
+  const start = Math.ceil(min / step) * step;
+  const out = [];
+  for (let v = start, i = 0; v <= max + step * 1e-9 && i < 200; v += step, i++) {
+    out.push(Math.abs(v) < step * 1e-9 ? 0 : +v.toFixed(12));
+  }
+  return out;
+}
+
+/* ==========================================================================
+   2. MOTOR GRÁFICO (canvas 2D — sem dependências externas)
+   Suporta zoom (roda / pinça), deslocamento (arraste) e exportação PNG.
+   ========================================================================== */
+class Plot {
+  constructor(canvas, opts = {}) {
+    this.cv = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.series = [];
+    this.hlines = [];
+    this.opts = Object.assign({ xLabel: 't (s)', yLabel: '', title: '' }, opts);
+    this.xr = null;         // faixa x fixada pelo zoom [x0, x1]
+    this.m = { l: 68, r: 16, t: 30, b: 46 };
+    this._drag = null;
+    this._touch = null;
+    this._pinch = null;
+
+    this._resize = this._resize.bind(this);
+    this._draw = this._draw.bind(this);
+
+    if (window.ResizeObserver) {
+      this.ro = new ResizeObserver(() => this._resize());
+      this.ro.observe(canvas.parentElement || canvas);
+    }
+    window.addEventListener('resize', this._resize);
+
+    canvas.addEventListener('wheel', (e) => this._onWheel(e), { passive: false });
+    canvas.addEventListener('mousedown', (e) => this._onDown(e));
+    window.addEventListener('mousemove', (e) => this._onMove(e));
+    window.addEventListener('mouseup', () => { this._drag = null; });
+    canvas.addEventListener('dblclick', () => { this.xr = null; this._draw(); });
+    canvas.addEventListener('touchstart', (e) => this._onTouchStart(e), { passive: true });
+    canvas.addEventListener('touchmove', (e) => this._onTouchMove(e), { passive: false });
+    canvas.addEventListener('touchend', () => { this._touch = null; this._pinch = null; }, { passive: true });
+
+    this._resize();
+  }
+
+  /* ---------- dimensionamento ---------- */
+  _resize() {
+    const box = this.cv.parentElement || this.cv;
+    const r = box.getBoundingClientRect();
+    const w = Math.max(1, Math.round(r.width - 12));
+    const h = Math.max(1, Math.round(this.cv.getBoundingClientRect().height || 320));
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.cv.width = Math.round(w * dpr);
+    this.cv.height = Math.round(h * dpr);
+    this.W = w; this.H = h; this.dpr = dpr;
+    this._draw();
+  }
+
+  /* ---------- dados ---------- */
+  setData(series, opts = {}) {
+    this.series = series || [];
+    this.hlines = opts.hlines || [];
+    Object.assign(this.opts, opts);
+    this.xr = null;
+    this._draw();
+  }
+  setHlines(h) { this.hlines = h || []; this._draw(); }
+
+  _fullXRange() {
+    let x0 = Infinity, x1 = -Infinity;
+    for (const s of this.series) {
+      const p = s.points;
+      if (!p || !p.length) continue;
+      if (p[0][0] < x0) x0 = p[0][0];
+      if (p[p.length - 1][0] > x1) x1 = p[p.length - 1][0];
+    }
+    if (!isFinite(x0) || !isFinite(x1)) return [0, 1];
+    if (x0 === x1) { x0 -= 0.5; x1 += 0.5; }
+    return [x0, x1];
+  }
+
+  /* ---------- interação ---------- */
+  _onWheel(e) {
+    if (!this.series.length) return;
+    e.preventDefault();
+    const rect = this.cv.getBoundingClientRect();
+    const plotW = this.W - this.m.l - this.m.r;
+    const px = (e.clientX - rect.left - this.m.l) / plotW;
+    const full = this._fullXRange();
+    const cur = this.xr ? this.xr.slice() : full;
+    const span = cur[1] - cur[0];
+    const f = e.deltaY > 0 ? 1.20 : 1 / 1.20;
+    const cx = cur[0] + span * Math.min(Math.max(px, 0), 1);
+    let n0 = cx - (cx - cur[0]) * f;
+    let n1 = cx + (cur[1] - cx) * f;
+    if (n1 - n0 < (full[1] - full[0]) / 2000) return;
+    if (n1 - n0 >= (full[1] - full[0]) * 0.999) { this.xr = null; }
+    else { this.xr = [n0, n1]; }
+    this._draw();
+  }
+  _onDown(e) {
+    if (!this.series.length) return;
+    this._drag = { x: e.clientX, xr: this.xr ? this.xr.slice() : this._fullXRange() };
+  }
+  _onMove(e) {
+    if (!this._drag) return;
+    const plotW = this.W - this.m.l - this.m.r;
+    const dx = e.clientX - this._drag.x;
+    const span = this._drag.xr[1] - this._drag.xr[0];
+    const shift = -dx / plotW * span;
+    this.xr = [this._drag.xr[0] + shift, this._drag.xr[1] + shift];
+    this._draw();
+  }
+  _onTouchStart(e) {
+    if (e.touches.length === 1) {
+      this._touch = { x: e.touches[0].clientX, xr: this.xr ? this.xr.slice() : this._fullXRange() };
+      this._pinch = null;
+    } else if (e.touches.length === 2) {
+      this._pinch = {
+        d: Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                      e.touches[0].clientY - e.touches[1].clientY),
+        xr: this.xr ? this.xr.slice() : this._fullXRange()
+      };
+      this._touch = null;
+    }
+  }
+  _onTouchMove(e) {
+    if (e.touches.length === 2 && this._pinch) {
+      e.preventDefault();
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                           e.touches[0].clientY - e.touches[1].clientY);
+      const [a, b] = this._pinch.xr;
+      const c = (a + b) / 2;
+      const span = (b - a) * (this._pinch.d / Math.max(d, 1));
+      this.xr = [c - span / 2, c + span / 2];
+      this._draw();
+    } else if (e.touches.length === 1 && this._touch) {
+      e.preventDefault();
+      const plotW = this.W - this.m.l - this.m.r;
+      const dx = e.touches[0].clientX - this._touch.x;
+      const span = this._touch.xr[1] - this._touch.xr[0];
+      const shift = -dx / plotW * span;
+      this.xr = [this._touch.xr[0] + shift, this._touch.xr[1] + shift];
+      this._draw();
+    }
+  }
+
+  /* ---------- desenho ---------- */
+  _draw() {
+    const c = this.ctx, W = this.W, H = this.H;
+    if (!W || !H || !this.dpr) return;
+    c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = '#ffffff';
+    c.fillRect(0, 0, W, H);
+
+    const m = this.m;
+    const pw = W - m.l - m.r;
+    const ph = H - m.t - m.b;
+    if (pw <= 10 || ph <= 10) return;
+
+    const visible = this.series.filter(s => s.visible !== false && s.points && s.points.length);
+    if (!visible.length) {
+      c.fillStyle = '#8a99a8';
+      c.font = '13px "Segoe UI", sans-serif';
+      c.textAlign = 'center';
+      c.fillText('Sem dados — execute o cálculo.', W / 2, H / 2);
+      return;
+    }
+
+    /* faixa X */
+    const full = this._fullXRange();
+    const x0 = this.xr ? this.xr[0] : full[0];
+    const x1 = this.xr ? this.xr[1] : full[1];
+    const xspan = (x1 - x0) || 1;
+
+    /* faixa Y (varredura com passo para desempenho) */
+    let ymin = Infinity, ymax = -Infinity;
+    for (const s of visible) {
+      const p = s.points, n = p.length;
+      const stride = Math.max(1, Math.floor(n / 3000));
+      for (let i = 0; i < n; i += stride) {
+        const px = p[i][0], py = p[i][1];
+        if (px < x0 || px > x1) continue;
+        if (py < ymin) ymin = py;
+        if (py > ymax) ymax = py;
+      }
+    }
+    for (const h of this.hlines) {
+      if (isFinite(h.y)) { if (h.y < ymin) ymin = h.y; if (h.y > ymax) ymax = h.y; }
+    }
+    if (!isFinite(ymin) || !isFinite(ymax)) { ymin = -1; ymax = 1; }
+    if (ymin === ymax) { ymin -= Math.abs(ymin || 1) * 0.1; ymax += Math.abs(ymax || 1) * 0.1; }
+    const pad = (ymax - ymin) * 0.10;
+    ymin -= pad; ymax += pad;
+    const yspan = ymax - ymin;
+
+    const X = (v) => m.l + (v - x0) / xspan * pw;
+    const Y = (v) => m.t + ph - (v - ymin) / yspan * ph;
+
+    /* grade horizontal + rótulos Y */
+    c.font = '11px "Segoe UI", sans-serif';
+    c.textAlign = 'right';
+    c.textBaseline = 'middle';
+    const yTicks = makeTicks(ymin, ymax, 6);
+    c.strokeStyle = '#eef2f6';
+    c.lineWidth = 1;
+    for (const tv of yTicks) {
+      const py = Y(tv);
+      if (py < m.t - 1 || py > m.t + ph + 1) continue;
+      c.beginPath(); c.moveTo(m.l, py); c.lineTo(m.l + pw, py); c.stroke();
+      c.fillStyle = '#5a6b7b';
+      c.fillText(fmt(tv, 4), m.l - 8, py);
+    }
+    /* grade vertical + rótulos X */
+    c.textAlign = 'center';
+    c.textBaseline = 'top';
+    const xTicks = makeTicks(x0, x1, 7);
+    for (const tv of xTicks) {
+      const px = X(tv);
+      if (px < m.l - 1 || px > m.l + pw + 1) continue;
+      c.beginPath(); c.moveTo(px, m.t); c.lineTo(px, m.t + ph); c.stroke();
+      c.fillStyle = '#5a6b7b';
+      c.fillText(fmt(tv, 4), px, m.t + ph + 7);
+    }
+
+    /* eixo y = 0 destacado */
+    if (ymin < 0 && ymax > 0) {
+      c.strokeStyle = '#c3cfdb';
+      c.beginPath(); c.moveTo(m.l, Y(0)); c.lineTo(m.l + pw, Y(0)); c.stroke();
+    }
+
+    /* moldura do gráfico */
+    c.strokeStyle = '#cfd8e3';
+    c.strokeRect(m.l, m.t, pw, ph);
+
+    /* linhas horizontais de referência */
+    for (const h of this.hlines) {
+      if (!isFinite(h.y)) continue;
+      const py = Y(h.y);
+      if (py < m.t || py > m.t + ph) continue;
+      c.save();
+      c.setLineDash([6, 4]);
+      c.strokeStyle = h.color || '#b03a2e';
+      c.beginPath(); c.moveTo(m.l, py); c.lineTo(m.l + pw, py); c.stroke();
+      c.restore();
+      if (h.label) {
+        c.fillStyle = h.color || '#b03a2e';
+        c.font = '10px "Segoe UI", sans-serif';
+        c.textAlign = 'left'; c.textBaseline = 'bottom';
+        c.fillText(h.label, m.l + 5, py - 2);
+      }
+    }
+
+    /* séries */
+    c.save();
+    c.beginPath();
+    c.rect(m.l, m.t, pw, ph);
+    c.clip();
+    for (const s of visible) {
+      const p = s.points, n = p.length;
+      c.beginPath();
+      c.strokeStyle = s.color || '#1b6ca8';
+      c.lineWidth = s.width || 1.6;
+      c.setLineDash(s.dash || []);
+      let started = false;
+      for (let i = 0; i < n; i++) {
+        const px = X(p[i][0]), py = Y(p[i][1]);
+        if (!started) { c.moveTo(px, py); started = true; }
+        else c.lineTo(px, py);
+      }
+      c.stroke();
+      c.setLineDash([]);
+    }
+    c.restore();
+
+    /* rótulos dos eixos */
+    c.fillStyle = '#5a6b7b';
+    c.font = '11.5px "Segoe UI", sans-serif';
+    c.textAlign = 'center'; c.textBaseline = 'bottom';
+    if (this.opts.xLabel) c.fillText(this.opts.xLabel, m.l + pw / 2, H - 6);
+    if (this.opts.yLabel) {
+      c.save();
+      c.translate(14, m.t + ph / 2);
+      c.rotate(-Math.PI / 2);
+      c.textAlign = 'center'; c.textBaseline = 'top';
+      c.fillText(this.opts.yLabel, 0, 0);
+      c.restore();
+    }
+
+    /* legenda */
+    let lx = m.l + 4;
+    const ly = 12;
+    c.font = '11px "Segoe UI", sans-serif';
+    c.textAlign = 'left'; c.textBaseline = 'middle';
+    for (const s of visible) {
+      if (s.name === undefined) continue;
+      c.strokeStyle = s.color || '#1b6ca8';
+      c.lineWidth = 2.4;
+      c.setLineDash(s.dash || []);
+      c.beginPath(); c.moveTo(lx, ly); c.lineTo(lx + 20, ly); c.stroke();
+      c.setLineDash([]);
+      c.fillStyle = '#5a6b7b';
+      c.fillText(s.name, lx + 25, ly);
+      lx += 25 + c.measureText(s.name).width + 18;
+      if (lx > W - 100) break;
+    }
+
+    /* selo de zoom */
+    if (this.xr) {
+      c.fillStyle = '#1b6ca8';
+      c.font = '10px "Segoe UI", sans-serif';
+      c.textAlign = 'right'; c.textBaseline = 'top';
+      c.fillText('zoom ativo · duplo clique para redefinir', m.l + pw - 4, m.t + 4);
+    }
+  }
+
+  /** Exporta o gráfico como PNG. */
+  toPNG(filename) {
+    const a = document.createElement('a');
+    a.download = filename || 'grafico.png';
+    a.href = this.cv.toDataURL('image/png');
+    a.click();
   }
 }
+
+/* ==========================================================================
+   3. MOTOR MATEMÁTICO — VIBRAÇÕES LIVRES SDOF
+   ========================================================================== */
+const REGIME_LABEL = {
+  nao_amortecido: 'Não amortecido (ξ = 0)',
+  subamortecido: 'Subamortecido (0 < ξ < 1)',
+  critico: 'Criticamente amortecido (ξ = 1)',
+  superamortecido: 'Superamortecido (ξ > 1)'
+};
+const REGIME_BADGE = {
+  nao_amortecido: 'info',
+  subamortecido: 'ok',
+  critico: 'warn',
+  superamortecido: 'warn'
+};
+
+/**
+ * Monta o sistema dinâmico a partir das propriedades físicas (SI).
+ */
+function buildSystem(m, k, c, u0, v0) {
+  const w = Math.sqrt(k / m);          // frequência natural circular (rad/s)
+  const ccr = 2 * m * w;               // amortecimento crítico (N·s/m)
+  const xi = c / ccr;                  // razão de amortecimento
+  const T = 2 * Math.PI / w;           // período natural (s)
+  const f = 1 / T;                     // frequência natural (Hz)
+
+  let regime;
+  if (xi < 1e-12) regime = 'nao_amortecido';
+  else if (Math.abs(xi - 1) < 1e-6) regime = 'critico';
+  else if (xi < 1) regime = 'subamortecido';
+  else regime = 'superamortecido';
+
+  const sys = { m, k, c, u0, v0, w, ccr, xi, T, f, regime };
+
+  if (regime === 'subamortecido') {
+    sys.wd = w * Math.sqrt(1 - xi * xi);
+    sys.Td = 2 * Math.PI / sys.wd;
+    sys.fd = 1 / sys.Td;
+  }
+  if (regime === 'superamortecido') {
+    sys.W = w * Math.sqrt(xi * xi - 1);
+  }
+  return sys;
+}
+
+/**
+ * Retorna a função resposta [u(t), u̇(t), ü(t)] conforme o regime.
+ */
+function responseFn(sys) {
+  const { w, wd, W, xi, regime, u0, v0 } = sys;
+  const s = xi * w;
+
+  if (regime === 'nao_amortecido') {
+    // u(t) = u0·cos(ωt) + (u̇0/ω)·sen(ωt)
+    return (t) => {
+      const ct = Math.cos(w * t), st = Math.sin(w * t);
+      const u = u0 * ct + (v0 / w) * st;
+      const v = -u0 * w * st + v0 * ct;
+      return [u, v, -w * w * u];
+    };
+  }
+
+  if (regime === 'subamortecido') {
+    const A = u0;
+    const B = (v0 + s * u0) / wd;
+    return (t) => {
+      const e = Math.exp(-s * t), ct = Math.cos(wd * t), st = Math.sin(wd * t);
+      const u = e * (A * ct + B * st);
+      const v = e * ((B * wd - s * A) * ct + (-A * wd - s * B) * st);
+      const a = e * ((s * s * A - 2 * s * B * wd - A * wd * wd) * ct +
+                     (s * s * B + 2 * s * A * wd - B * wd * wd) * st);
+      return [u, v, a];
+    };
+  }
+
+  if (regime === 'critico') {
+    // u(t) = [u0 + (ω·u0 + u̇0)·t]·e^(−ωt)
+    const A = u0;
+    const B = v0 + w * u0;
+    return (t) => {
+      const e = Math.exp(-w * t);
+      const u = (A + B * t) * e;
+      const v = e * (B - w * (A + B * t));
+      const a = e * (w * w * A + w * w * B * t - 2 * w * B);
+      return [u, v, a];
+    };
+  }
+
+  // superamortecido
+  const A = u0;
+  const B = (v0 + s * u0) / W;
+  return (t) => {
+    const e = Math.exp(-s * t), ch = Math.cosh(W * t), sh = Math.sinh(W * t);
+    const u = e * (A * ch + B * sh);
+    const v = e * ((B * W - s * A) * ch + (A * W - s * B) * sh);
+    const a = e * ((s * s * A - 2 * s * B * W + A * W * W) * ch +
+                   (s * s * B - 2 * s * A * W + B * W * W) * sh);
+    return [u, v, a];
+  };
+}
+
+const MAX_POINTS = 20000;
+
+/**
+ * Gera a série temporal da resposta.
+ */
+function buildSeries(sys, tTotal, dt) {
+  const fn = responseFn(sys);
+  const nReq = Math.max(1, Math.floor(tTotal / dt));
+  const n = Math.min(nReq, MAX_POINTS);
+  const dtEff = tTotal / n;
+  const N = n + 1;
+
+  const t = new Float64Array(N), u = new Float64Array(N),
+        v = new Float64Array(N), a = new Float64Array(N);
+
+  for (let i = 0; i < N; i++) {
+    const ti = i === N - 1 ? tTotal : i * dtEff;
+    t[i] = ti;
+    const r = fn(ti);
+    u[i] = r[0]; v[i] = r[1]; a[i] = r[2];
+  }
+
+  const m = sys.m, k = sys.k;
+  const ec = new Float64Array(N), ep = new Float64Array(N), et = new Float64Array(N);
+  for (let i = 0; i < N; i++) {
+    ec[i] = 0.5 * m * v[i] * v[i];
+    ep[i] = 0.5 * k * u[i] * u[i];
+    et[i] = ec[i] + ep[i];
+  }
+
+  return { t, u, v, a, ec, ep, et, N, dtEff, capped: nReq > MAX_POINTS };
+}
+
+/** Localiza os picos da resposta (velocidade nula), com interpolação. */
+function findPeaks(t, v, fn) {
+  const pos = [], neg = [];
+  for (let i = 1; i < v.length; i++) {
+    const v0 = v[i - 1], v1 = v[i];
+    if (v0 > 0 && v1 <= 0) {
+      const tp = t[i - 1] + (t[i] - t[i - 1]) * v0 / (v0 - v1);
+      pos.push({ t: tp, u: fn(tp)[0] });
+    } else if (v0 < 0 && v1 >= 0) {
+      const tp = t[i - 1] + (t[i] - t[i - 1]) * v0 / (v0 - v1);
+      neg.push({ t: tp, u: fn(tp)[0] });
+    }
+  }
+  return { pos, neg };
+}
+
+/** Integração numérica RK4 — usada na auditoria como solução independente. */
+function rk4(m, k, c, u0, v0, dt, n) {
+  const U = new Float64Array(n + 1), V = new Float64Array(n + 1);
+  let u = u0, v = v0;
+  U[0] = u; V[0] = v;
+  const f = (uu, vv) => [vv, -(c * vv + k * uu) / m];
+  for (let i = 0; i < n; i++) {
+    const [k1u, k1v] = f(u, v);
+    const [k2u, k2v] = f(u + 0.5 * dt * k1u, v + 0.5 * dt * k1v);
+    const [k3u, k3v] = f(u + 0.5 * dt * k2u, v + 0.5 * dt * k2v);
+    const [k4u, k4v] = f(u + dt * k3u, v + dt * k3v);
+    u += dt / 6 * (k1u + 2 * k2u + 2 * k3u + k4u);
+    v += dt / 6 * (k1v + 2 * k2v + 2 * k3v + k4v);
+    U[i + 1] = u; V[i + 1] = v;
+  }
+  return { U, V };
+}
+
+/* ==========================================================================
+   4. ESTADO GLOBAL E CÁLCULO
+   ========================================================================== */
+const state = {
+  input: null,   // { m, k, c, u0, v0, tTotal, dt }
+  sys: null,
+  series: null,
+  derived: null,
+  model: null
+};
+
+const plots = {};
+
+const UNIT_MASS = { kg: 1, t: 1000 };
+const UNIT_STIFF = { 'N/m': 1, 'kN/m': 1000 };
+const UNIT_DAMP = { 'N·s/m': 1, 'kN·s/m': 1000 };
+const UNIT_DISP = { m: 1, cm: 0.01, mm: 0.001 };
+const UNIT_VEL = { 'm/s': 1, 'cm/s': 0.01, 'mm/s': 0.001 };
+
+/** Lê os dados de entrada convertendo tudo para SI. */
+function readInputs() {
+  const m = num('#inM') * UNIT_MASS[$('#uM').value];
+  const k = num('#inK') * UNIT_STIFF[$('#uK').value];
+  const mode = $('#inDampMode').value;
+
+  let c;
+  if (mode === 'c') {
+    c = num('#inC') * UNIT_DAMP[$('#uC').value];
+  } else {
+    const xi = num('#inXi');
+    if (!isFinite(xi) || xi < 0) return { error: 'Razão de amortecimento ξ inválida (deve ser ≥ 0).' };
+    c = 2 * xi * Math.sqrt(k * m);
+  }
+
+  const u0 = num('#inU0') * UNIT_DISP[$('#uU0').value];
+  const v0 = num('#inV0') * UNIT_VEL[$('#uV0').value];
+  const tTotal = num('#inT');
+  const dt = num('#inDt');
+
+  if (!isFinite(m) || m <= 0) return { error: 'Massa equivalente m deve ser numérica e maior que zero.' };
+  if (!isFinite(k) || k <= 0) return { error: 'Rigidez equivalente k deve ser numérica e maior que zero.' };
+  if (!isFinite(c) || c < 0) return { error: 'Coeficiente de amortecimento c inválido (deve ser ≥ 0).' };
+  if (!isFinite(u0)) return { error: 'Deslocamento inicial u₀ inválido.' };
+  if (!isFinite(v0)) return { error: 'Velocidade inicial u̇₀ inválida.' };
+  if (!isFinite(tTotal) || tTotal <= 0) return { error: 'Tempo total de análise deve ser maior que zero.' };
+  if (!isFinite(dt) || dt <= 0) return { error: 'Intervalo de integração Δt deve ser maior que zero.' };
+  if (dt > tTotal) return { error: 'O intervalo Δt não pode ser maior que o tempo total de análise.' };
+
+  return { m, k, c, u0, v0, tTotal, dt };
+}
+
+/** Executa o cálculo completo e atualiza toda a interface. */
+function compute(silent) {
+  const inp = readInputs();
+  const msgBox = $('#inputMsg');
+  if (inp.error) {
+    msgBox.className = 'msg err show';
+    msgBox.textContent = inp.error;
+    return;
+  }
+  msgBox.className = 'msg';
+  msgBox.textContent = '';
+
+  const sys = buildSystem(inp.m, inp.k, inp.c, inp.u0, inp.v0);
+  const S = buildSeries(sys, inp.tTotal, inp.dt);
+  const fn = responseFn(sys);
+
+  /* --- derivados --- */
+  let maxU = -Infinity, minU = Infinity, maxV = -Infinity, minV = Infinity,
+      maxA = -Infinity, minA = Infinity, maxAbsU = 0, tMaxU = 0;
+  for (let i = 0; i < S.N; i++) {
+    if (S.u[i] > maxU) { maxU = S.u[i]; }
+    if (S.u[i] < minU) { minU = S.u[i]; }
+    if (S.v[i] > maxV) maxV = S.v[i];
+    if (S.v[i] < minV) minV = S.v[i];
+    if (S.a[i] > maxA) maxA = S.a[i];
+    if (S.a[i] < minA) minA = S.a[i];
+    const au = Math.abs(S.u[i]);
+    if (au > maxAbsU) { maxAbsU = au; tMaxU = S.t[i]; }
+  }
+
+  /* amplitude teórica */
+  let amp;
+  if (sys.regime === 'nao_amortecido') {
+    amp = Math.sqrt(sys.u0 * sys.u0 + (sys.v0 / sys.w) ** 2);
+  } else if (sys.regime === 'subamortecido') {
+    const B = (sys.v0 + sys.xi * sys.w * sys.u0) / sys.wd;
+    amp = Math.sqrt(sys.u0 * sys.u0 + B * B);
+  } else {
+    amp = maxAbsU; // resposta não oscilatória
+  }
+
+  /* decremento logarítmico */
+  let deltaTeo = null, deltaNum = null, xiFromDelta = null, xiFromDeltaNum = null;
+  if (sys.regime === 'subamortecido') {
+    deltaTeo = 2 * Math.PI * sys.xi / Math.sqrt(1 - sys.xi * sys.xi);
+    const pk = findPeaks(S.t, S.v, fn);
+    if (pk.pos.length >= 2) {
+      const u1 = Math.abs(pk.pos[0].u), u2 = Math.abs(pk.pos[1].u);
+      if (u1 > 0 && u2 > 0 && u1 > u2) {
+        deltaNum = Math.log(u1 / u2);
+        xiFromDeltaNum = deltaNum / Math.sqrt(4 * Math.PI * Math.PI + deltaNum * deltaNum);
+      }
+    }
+    xiFromDelta = deltaTeo / Math.sqrt(4 * Math.PI * Math.PI + deltaTeo * deltaTeo);
+  }
+
+  /* energia */
+  const E0 = 0.5 * sys.k * sys.u0 * sys.u0 + 0.5 * sys.m * sys.v0 * sys.v0;
+  let Emax = -Infinity, Emin = Infinity;
+  for (let i = 0; i < S.N; i++) {
+    if (S.et[i] > Emax) Emax = S.et[i];
+    if (S.et[i] < Emin) Emin = S.et[i];
+  }
+  const drift = E0 > 0 ? (Emax - Emin) / E0 : 0;
+
+  state.input = inp;
+  state.sys = sys;
+  state.series = S;
+  state.derived = {
+    maxU, minU, maxV, minV, maxA, minA, maxAbsU, tMaxU,
+    amp, deltaTeo, deltaNum, xiFromDelta, xiFromDeltaNum,
+    E0, Emax, Emin, drift
+  };
+
+  renderAll();
+
+  if (!silent) {
+    $('#statusPill').textContent = REGIME_LABEL[sys.regime] + ' · ξ = ' + fmt(sys.xi, 4);
+  } else {
+    $('#statusPill').textContent = REGIME_LABEL[sys.regime] + ' · ξ = ' + fmt(sys.xi, 4);
+  }
+}
+
+/* ==========================================================================
+   5. RENDERIZAÇÃO
+   ========================================================================== */
+function kpi(label, value, unit) {
+  return '<div class="kpi"><div class="k">' + label + '</div>' +
+         '<div class="v">' + value + '</div>' +
+         '<div class="u">' + (unit || '&nbsp;') + '</div></div>';
+}
+
+function renderAll() {
+  renderCalculo();
+  renderDeslocamento();
+  renderVelocidade();
+  renderAceleracao();
+  renderFrequencias();
+  renderAmortecimento();
+  renderEnergia();
+}
+
+/* ---------- 3 · Cálculo ---------- */
+function renderCalculo() {
+  const sys = state.sys, S = state.series, inp = state.input;
+  if (!sys) return;
+
+  $('#calcBadge').innerHTML =
+    '<span class="badge ' + REGIME_BADGE[sys.regime] + '" style="font-size:13px;padding:8px 16px">' +
+    REGIME_LABEL[sys.regime] + '</span>';
+
+  const notice = $('#calcNotice');
+  if (S.capped) {
+    notice.className = 'msg warn show';
+    notice.textContent = 'O intervalo Δt solicitado geraria mais de ' + MAX_POINTS.toLocaleString('pt-BR') +
+      ' pontos. A série foi gerada com Δt = ' + fmt(S.dtEff, 6) + ' s (' + S.N.toLocaleString('pt-BR') +
+      ' pontos) para preservar o desempenho.';
+  } else {
+    notice.className = 'msg';
+    notice.textContent = '';
+  }
+
+  let html = '';
+  html += kpi('Massa equivalente m', fmt(inp.m, 3), 'kg');
+  html += kpi('Rigidez equivalente k', fmt(inp.k, 3), 'N/m');
+  html += kpi('Amortecimento c', fmt(inp.c, 4), 'N·s/m');
+  html += kpi('Amortecimento crítico c<sub>cr</sub>', fmt(sys.ccr, 4), 'N·s/m');
+  html += kpi('Razão de amortecimento ξ', fmt(sys.xi, 6), 'adimensional');
+  html += kpi('Frequência natural ω', fmt(sys.w, 6), 'rad/s');
+  html += kpi('Frequência natural f', fmt(sys.f, 6), 'Hz');
+  html += kpi('Período natural T', fmt(sys.T, 6), 's');
+  if (sys.regime === 'subamortecido') {
+    html += kpi('Frequência amortecida ω<sub>d</sub>', fmt(sys.wd, 6), 'rad/s');
+    html += kpi('Período amortecido T<sub>d</sub>', fmt(sys.Td, 6), 's');
+  }
+  if (sys.regime === 'superamortecido') {
+    html += kpi('Parâmetro W = ω√(ξ²−1)', fmt(sys.W, 6), 'rad/s');
+  }
+  html += kpi('Amplitude característica', fmt(state.derived.amp, 6), 'm');
+  html += kpi('Pontos da série', S.N.toLocaleString('pt-BR'), 'Δt = ' + fmt(S.dtEff, 6) + ' s');
+  $('#calcKpis').innerHTML = html;
+
+  /* equação do movimento */
+  let eq = 'm·ü(t) + c·u̇(t) + k·u(t) = 0\n\n';
+  eq += 'm  = ' + fmt(inp.m, 3) + ' kg\n';
+  eq += 'c  = ' + fmt(inp.c, 4) + ' N·s/m\n';
+  eq += 'k  = ' + fmt(inp.k, 3) + ' N/m\n\n';
+  eq += 'u(0)  = ' + fmt(inp.u0, 6) + ' m\n';
+  eq += 'u̇(0)  = ' + fmt(inp.v0, 6) + ' m/s\n\n';
+  if (sys.regime === 'nao_amortecido') {
+    eq += 'Solução (não amortecido):\n';
+    eq += 'u(t) = u₀·cos(ωt) + (u̇₀/ω)·sen(ωt)\n';
+  } else if (sys.regime === 'subamortecido') {
+    eq += 'Solução (subamortecido, ω_d = ω√(1−ξ²)):\n';
+    eq += 'u(t) = e^(−ξωt)·[u₀·cos(ω_d t) + ((u̇₀ + ξωu₀)/ω_d)·sen(ω_d t)]\n';
+  } else if (sys.regime === 'critico') {
+    eq += 'Solução (criticamente amortecido):\n';
+    eq += 'u(t) = [u₀ + (ω·u₀ + u̇₀)·t]·e^(−ωt)\n';
+  } else {
+    eq += 'Solução (superamortecido, W = ω√(ξ²−1)):\n';
+    eq += 'u(t) = e^(−ξωt)·[u₀·cosh(Wt) + ((u̇₀ + ξωu₀)/W)·senh(Wt)]\n';
+  }
+  $('#calcEq').textContent = eq;
+}
+
+/* ---------- 4 · Deslocamento ---------- */
+function renderDeslocamento() {
+  const sys = state.sys, S = state.series, D = state.derived;
+  if (!sys) return;
+
+  const pts = [];
+  for (let i = 0; i < S.N; i++) pts.push([S.t[i], S.u[i]]);
+  const series = [{ name: 'u(t)', color: '#1b6ca8', width: 1.8, points: pts }];
+
+  /* envelope */
+  if (sys.regime === 'subamortecido') {
+    const s = sys.xi * sys.w;
+    const B = (sys.v0 + s * sys.u0) / sys.wd;
+    const R = Math.sqrt(sys.u0 * sys.u0 + B * B);
+    const up = [], dn = [];
+    const stride = Math.max(1, Math.floor(S.N / 1200));
+    for (let i = 0; i < S.N; i += stride) {
+      const e = R * Math.exp(-s * S.t[i]);
+      up.push([S.t[i], e]);
+      dn.push([S.t[i], -e]);
+    }
+    series.push({ name: '+envelope', color: '#b03a2e', width: 1.1, dash: [5, 4], points: up });
+    series.push({ name: '−envelope', color: '#b03a2e', width: 1.1, dash: [5, 4], points: dn });
+  } else if (sys.regime === 'nao_amortecido' && D.amp > 0) {
+    series.push({ name: '±A (amplitude constante)', color: '#b03a2e', width: 1.1, dash: [5, 4],
+      points: [[S.t[0], D.amp], [S.t[S.N - 1], D.amp]] });
+    series.push({ name: '', color: '#b03a2e', width: 1.1, dash: [5, 4],
+      points: [[S.t[0], -D.amp], [S.t[S.N - 1], -D.amp]] });
+  }
+
+  plots.u.setData(series, { xLabel: 't (s)', yLabel: 'u (m)', title: 'Deslocamento' });
+
+  let html = '';
+  html += kpi('Deslocamento máximo', fmt(D.maxU, 6), 'm');
+  html += kpi('Deslocamento mínimo', fmt(D.minU, 6), 'm');
+  html += kpi('|u| máximo', fmt(D.maxAbsU, 6), 'm');
+  html += kpi('Instante de |u| máximo', fmt(D.tMaxU, 4), 's');
+  html += kpi('Amplitude característica', fmt(D.amp, 6), 'm');
+  html += kpi('u(0) verificado', fmt(S.u[0], 8), 'm');
+  $('#kpiU').innerHTML = html;
+}
+
+/* ---------- 5 · Velocidade ---------- */
+function renderVelocidade() {
+  const S = state.series, D = state.derived;
+  if (!S) return;
+  const pts = [];
+  for (let i = 0; i < S.N; i++) pts.push([S.t[i], S.v[i]]);
+  plots.v.setData([{ name: 'u̇(t)', color: '#1e8449', width: 1.8, points: pts }],
+    { xLabel: 't (s)', yLabel: 'u̇ (m/s)', title: 'Velocidade' });
+
+  let html = '';
+  html += kpi('Velocidade máxima', fmt(D.maxV, 6), 'm/s');
+  html += kpi('Velocidade mínima', fmt(D.minV, 6), 'm/s');
+  html += kpi('|u̇| máximo', fmt(Math.max(Math.abs(D.maxV), Math.abs(D.minV)), 6), 'm/s');
+  html += kpi('u̇(0) verificado', fmt(S.v[0], 8), 'm/s');
+  $('#kpiV').innerHTML = html;
+}
+
+/* ---------- 6 · Aceleração ---------- */
+function renderAceleracao() {
+  const S = state.series, D = state.derived;
+  if (!S) return;
+  const pts = [];
+  for (let i = 0; i < S.N; i++) pts.push([S.t[i], S.a[i]]);
+  plots.a.setData([{ name: 'ü(t)', color: '#b9770e', width: 1.8, points: pts }],
+    { xLabel: 't (s)', yLabel: 'ü (m/s²)', title: 'Aceleração' });
+
+  let html = '';
+  html += kpi('Aceleração máxima', fmt(D.maxA, 6), 'm/s²');
+  html += kpi('Aceleração mínima', fmt(D.minA, 6), 'm/s²');
+  html += kpi('|ü| máximo', fmt(Math.max(Math.abs(D.maxA), Math.abs(D.minA)), 6), 'm/s²');
+  html += kpi('ü(0) verificado', fmt(S.a[0], 8), 'm/s²');
+  $('#kpiA').innerHTML = html;
+}
+
+/* ---------- 7 · Frequências ---------- */
+function renderFrequencias() {
+  const sys = state.sys, inp = state.input;
+  if (!sys) return;
+
+  const rows = [
+    ['Frequência natural circular', 'ω = √(k/m)', fmt(sys.w, 8), 'rad/s'],
+    ['Frequência natural', 'f = ω/(2π)', fmt(sys.f, 8), 'Hz'],
+    ['Período natural', 'T = 2π/ω', fmt(sys.T, 8), 's'],
+    ['Amortecimento crítico', 'c_cr = 2·m·ω', fmt(sys.ccr, 6), 'N·s/m'],
+    ['Coeficiente de amortecimento', 'c', fmt(inp.c, 6), 'N·s/m'],
+    ['Razão de amortecimento', 'ξ = c/c_cr', fmt(sys.xi, 8), '—'],
+    ['Verificação', 'ω − 2πf', fmt(sys.w - 2 * Math.PI * sys.f, 12), 'rad/s'],
+    ['Verificação', 'T − 1/f', fmt(sys.T - 1 / sys.f, 12), 's']
+  ];
+  if (sys.regime === 'subamortecido') {
+    rows.push(['Frequência amortecida', 'ω_d = ω√(1−ξ²)', fmt(sys.wd, 8), 'rad/s']);
+    rows.push(['Frequência amortecida', 'f_d = ω_d/(2π)', fmt(sys.fd, 8), 'Hz']);
+    rows.push(['Período amortecido', 'T_d = 2π/ω_d', fmt(sys.Td, 8), 's']);
+  }
+  if (sys.regime === 'superamortecido') {
+    rows.push(['Parâmetro W', 'W = ω√(ξ²−1)', fmt(sys.W, 8), 'rad/s']);
+  }
+  rows.push(['Classificação', '—', REGIME_LABEL[sys.regime], '—']);
+
+  let html = '<thead><tr><th>Grandeza</th><th>Relação</th><th style="text-align:right">Valor</th><th>Unidade</th></tr></thead><tbody>';
+  for (const r of rows) {
+    html += '<tr><td>' + r[0] + '</td><td><code>' + r[1] + '</code></td>' +
+            '<td class="num">' + r[2] + '</td><td>' + r[3] + '</td></tr>';
+  }
+  html += '</tbody>';
+  $('#tbFreq').innerHTML = html;
+
+  $('#freqEq').textContent =
+    'ω = √(k/m)          f = 1/T = ω/(2π)          T = 2π/ω\n' +
+    'c_cr = 2·m·ω        ξ = c/c_cr\n' +
+    'ω_d = ω·√(1 − ξ²)   T_d = 2π/ω_d      (0 ≤ ξ < 1)\n' +
+    'W   = ω·√(ξ² − 1)                     (ξ > 1)';
+}
+
+/* ---------- 8 · Amortecimento ---------- */
+function renderAmortecimento() {
+  const sys = state.sys, inp = state.input, D = state.derived;
+  if (!sys) return;
+
+  /* gráfico comparativo */
+  const raw = $('#xiList').value || '0; 0,03; 0,05; 0,10; 1,00; 1,50';
+  const list = raw.split(';')
+    .map(s => s.trim().replace(',', '.'))
+    .filter(s => s !== '')
+    .map(Number)
+    .filter(v => isFinite(v) && v >= 0)
+    .slice(0, 8);
+
+  const colors = ['#0b2545', '#1b6ca8', '#2e86c1', '#4fb3d9', '#1e8449', '#b9770e', '#b03a2e', '#7d3c98'];
+  const series = [];
+  const nPts = Math.min(state.series.N, 4000);
+  const stride = Math.max(1, Math.floor(state.series.N / nPts));
+
+  list.forEach((xi, idx) => {
+    const c = 2 * xi * Math.sqrt(inp.k * inp.m);
+    const s2 = buildSystem(inp.m, inp.k, c, inp.u0, inp.v0);
+    const fn = responseFn(s2);
+    const pts = [];
+    for (let i = 0; i < state.series.N; i += stride) {
+      const ti = state.series.t[i];
+      pts.push([ti, fn(ti)[0]]);
+    }
+    series.push({
+      name: 'ξ = ' + fmt(xi, 3),
+      color: colors[idx % colors.length],
+      width: 1.6,
+      points: pts
+    });
+  });
+
+  if (!series.length) {
+    const fn = responseFn(sys);
+    const pts = [];
+    for (let i = 0; i < state.series.N; i += stride) pts.push([state.series.t[i], fn(state.series.t[i])[0]]);
+    series.push({ name: 'ξ = ' + fmt(sys.xi, 3), color: '#1b6ca8', width: 1.8, points: pts });
+  }
+
+  plots.cmp.setData(series, { xLabel: 't (s)', yLabel: 'u (m)', title: 'Comparação de amortecimento' });
+
+  /* tabela do decremento */
+  let html = '<thead><tr><th>Grandeza</th><th style="text-align:right">Valor</th></tr></thead><tbody>';
+  if (sys.regime === 'subamortecido') {
+    html += '<tr><td>δ teórico = 2πξ/√(1−ξ²)</td><td class="num">' + fmt(D.deltaTeo, 8) + '</td></tr>';
+    html += '<tr><td>δ numérico (picos consecutivos)</td><td class="num">' +
+            (D.deltaNum != null ? fmt(D.deltaNum, 8) : '—') + '</td></tr>';
+    html += '<tr><td>ξ recuperado de δ (teórico)</td><td class="num">' + fmt(D.xiFromDelta, 8) + '</td></tr>';
+    html += '<tr><td>ξ recuperado de δ (numérico)</td><td class="num">' +
+            (D.xiFromDeltaNum != null ? fmt(D.xiFromDeltaNum, 8) : '—') + '</td></tr>';
+    html += '<tr><td>ξ de entrada</td><td class="num">' + fmt(sys.xi, 8) + '</td></tr>';
+    html += '<tr><td>T<sub>d</sub> (período amortecido)</td><td class="num">' + fmt(sys.Td, 6) + ' s</td></tr>';
+  } else {
+    html += '<tr><td colspan="2">O decremento logarítmico é aplicável apenas a sistemas subamortecidos (0 &lt; ξ &lt; 1). ' +
+            'Regime atual: ' + REGIME_LABEL[sys.regime] + '.</td></tr>';
+  }
+  html += '</tbody>';
+  $('#tbDelta').innerHTML = html;
+
+  /* tabela de picos */
+  const fn = responseFn(sys);
+  const pk = findPeaks(state.series.t, state.series.v, fn);
+  const all = pk.pos.map(p => ({ ...p, tipo: 'máximo' }))
+    .concat(pk.neg.map(p => ({ ...p, tipo: 'mínimo' })))
+    .sort((a, b) => a.t - b.t)
+    .slice(0, 16);
+
+  let ph = '<thead><tr><th>#</th><th>Tipo</th><th style="text-align:right">t (s)</th>' +
+           '<th style="text-align:right">u (m)</th><th style="text-align:right">|u| (m)</th></tr></thead><tbody>';
+  if (!all.length) {
+    ph += '<tr><td colspan="5">Nenhum pico identificado no intervalo analisado.</td></tr>';
+  } else {
+    all.forEach((p, i) => {
+      ph += '<tr><td>' + (i + 1) + '</td><td>' + p.tipo + '</td>' +
+            '<td class="num">' + fmt(p.t, 5) + '</td>' +
+            '<td class="num">' + fmt(p.u, 6) + '</td>' +
+            '<td class="num">' + fmt(Math.abs(p.u), 6) + '</td></tr>';
+    });
+  }
+  ph += '</tbody>';
+  $('#tbPeaks').innerHTML = ph;
+}
+
+/* ---------- 9 · Energia ---------- */
+function renderEnergia() {
+  const S = state.series, sys = state.sys, D = state.derived;
+  if (!S) return;
+
+  const mk = (arr, name, color, dash) => {
+    const pts = [];
+    const stride = Math.max(1, Math.floor(S.N / 3000));
+    for (let i = 0; i < S.N; i += stride) pts.push([S.t[i], arr[i]]);
+    return { name, color, width: 1.7, dash: dash || [], points: pts };
+  };
+
+  plots.e.setData([
+    mk(S.ec, 'E cinética', '#1e8449'),
+    mk(S.ep, 'E potencial elástica', '#1b6ca8'),
+    mk(S.et, 'E total', '#b03a2e', [6, 4])
+  ], { xLabel: 't (s)', yLabel: 'E (J)', title: 'Energia' });
+
+  let html = '';
+  html += kpi('E(0) = ½k·u₀² + ½m·u̇₀²', fmt(D.E0, 6), 'J');
+  html += kpi('E máxima na série', fmt(D.Emax, 6), 'J');
+  html += kpi('E mínima na série', fmt(D.Emin, 6), 'J');
+  html += kpi('Variação relativa', fmt(D.drift * 100, 4), '%');
+  html += kpi('E cinética máxima', fmt(Math.max(...S.ec), 6), 'J');
+  html += kpi('E potencial máxima', fmt(Math.max(...S.ep), 6), 'J');
+  $('#kpiE').innerHTML = html;
+
+  const box = $('#energyMsg');
+  if (sys.regime === 'nao_amortecido') {
+    if (D.drift < 1e-6) {
+      box.className = 'msg ok show';
+      box.textContent = 'Conservação de energia verificada: a energia total permanece constante ao longo do tempo ' +
+        '(variação relativa ' + fmt(D.drift * 100, 6) + '%). Há transformação contínua entre energia cinética e potencial elástica.';
+    } else {
+      box.className = 'msg warn show';
+      box.textContent = 'Atenção: para sistema não amortecido esperava-se energia total constante. ' +
+        'Variação relativa observada: ' + fmt(D.drift * 100, 6) + '%. Verifique a resolução temporal (Δt).';
+    }
+  } else {
+    box.className = 'msg show';
+    box.style.background = '#f2f6fa';
+    box.style.color = '#1c2833';
+    box.style.border = '1px solid #d8e0e8';
+    box.textContent = 'Sistema com amortecimento (ξ = ' + fmt(sys.xi, 4) + '): a energia total decai ao longo do tempo ' +
+      'pela dissipação viscosa. A redução observada no intervalo é de ' + fmt(D.drift * 100, 4) + '%.';
+  }
+}
+
+/* ==========================================================================
+   6. MODELAGEM ESTRUTURAL
+   ========================================================================== */
+function modelInputs() {
+  const type = $('#mType').value;
+  const E = num('#mE') * 1e9;                 // Pa
+  const sec = $('#mSec').value;
+  const bc = parseFloat($('#mBC').value);     // 12 ou 3
+  const n = Math.max(1, Math.round(num('#mN') || 1));
+  const L = sec === 'circ' ? (num('#mL2') || num('#mL')) : num('#mL');
+
+  let I = NaN, secTxt = '';
+  if (sec === 'ret') {
+    const b = num('#mB') / 100, h = num('#mH') / 100;
+    if (b > 0 && h > 0) { I = b * Math.pow(h, 3) / 12; secTxt = 'retangular ' + fmt(b * 100, 2) + ' × ' + fmt(h * 100, 2) + ' cm'; }
+  } else {
+    const d = num('#mD') / 100;
+    if (d > 0) { I = Math.PI * Math.pow(d, 4) / 64; secTxt = 'circular Ø ' + fmt(d * 100, 2) + ' cm'; }
+  }
+
+  /* massa */
+  const mode = $('#mMassMode').value;
+  const val = num('#mMassVal');
+  let mass = NaN, massTxt = '';
+  if (isFinite(val) && val > 0) {
+    if (mode === 't') { mass = val * 1000; massTxt = fmt(val, 4) + ' t = ' + fmt(mass, 3) + ' kg'; }
+    else if (mode === 'kg') { mass = val; massTxt = fmt(val, 3) + ' kg'; }
+    else { mass = val * 1000 / G_ACC; massTxt = 'P = ' + fmt(val, 3) + ' kN → m = P/g = ' + fmt(mass, 3) + ' kg (g = ' + G_ACC + ' m/s²)'; }
+  }
+
+  return { type, E, sec, secTxt, bc, n, L, I, mass, massTxt };
+}
+
+function updateModel() {
+  const P = modelInputs();
+  const type = P.type;
+
+  /* visibilidade dos grupos */
+  $('#grpStruct').style.display = type === 'eq' ? 'none' : 'block';
+  $('#grpEq').style.display = type === 'eq' ? 'block' : 'none';
+  $('#grpRet').style.display = P.sec === 'ret' ? 'grid' : 'none';
+  $('#grpCirc').style.display = P.sec === 'circ' ? 'grid' : 'none';
+
+  /* sugestões por tipo */
+  if (type === 'coluna') { $('#mN').value = 1; $('#mBC').value = '12'; }
+  else if (type === 'portico' || type === 'silo') { $('#mBC').value = '12'; }
+  else if (type === 'equip') { $('#mBC').value = '12'; }
+
+  /* desenho */
+  $('#modelSvg').innerHTML = modelSVG(type, P);
+
+  /* cálculo */
+  if (type === 'eq') {
+    $('#modelCalc').textContent =
+      'Sistema equivalente: utilize diretamente m, k e c na aba "Dados de entrada".\n' +
+      'Não há rigidez calculada a partir de geometria.';
+    state.model = { type: 'eq' };
+    return;
+  }
+
+  const kCol = P.bc * P.E * P.I / Math.pow(P.L, 3);
+  const K = P.n * kCol;
+
+  if (!isFinite(kCol) || !isFinite(K) || K <= 0) {
+    $('#modelCalc').textContent = 'Dados insuficientes para o cálculo da rigidez equivalente.';
+    state.model = null;
+    return;
+  }
+
+  let txt = '';
+  txt += 'Rigidez lateral de uma coluna\n';
+  txt += '  k_i = ' + P.bc + '·E·I / L³\n';
+  txt += '  E   = ' + fmt(P.E / 1e9, 4) + ' GPa = ' + P.E.toExponential(3) + ' Pa\n';
+  txt += '  seção ' + P.secTxt + '\n';
+  txt += '  I   = ' + P.I.toExponential(4) + ' m⁴\n';
+  txt += '  L   = ' + fmt(P.L, 4) + ' m\n';
+  txt += '  k_i = ' + P.bc + '·' + P.E.toExponential(3) + '·' + P.I.toExponential(4) + ' / ' + fmt(P.L, 4) + '³\n';
+  txt += '  k_i = ' + fmt(kCol, 4) + ' N/m\n\n';
+  txt += 'Rigidez equivalente (colunas em paralelo)\n';
+  txt += '  K_eq = Σ k_i = ' + P.n + ' × ' + fmt(kCol, 4) + '\n';
+  txt += '  K_eq = ' + fmt(K, 4) + ' N/m = ' + fmt(K / 1000, 4) + ' kN/m\n\n';
+  txt += 'Massa equivalente\n';
+  txt += '  ' + P.massTxt + '\n\n';
+  txt += 'Frequência natural resultante\n';
+  if (isFinite(P.mass) && P.mass > 0) {
+    const w = Math.sqrt(K / P.mass);
+    txt += '  ω = √(K_eq/m) = ' + fmt(w, 4) + ' rad/s\n';
+    txt += '  T = 2π/ω      = ' + fmt(2 * Math.PI / w, 4) + ' s\n';
+    txt += '  f = 1/T       = ' + fmt(w / (2 * Math.PI), 4) + ' Hz\n';
+  } else {
+    txt += '  informe a massa participante.\n';
+  }
+
+  $('#modelCalc').textContent = txt;
+  state.model = { type, K, m: P.mass, kCol, P };
+}
+
+/** Desenho esquemático em SVG conforme o tipo de sistema. */
+function modelSVG(type, P) {
+  const navy = '#0b2545', blue = '#1b6ca8', cyan = '#4fb3d9', gray = '#8a99a8';
+  const ground = (y) => {
+    let s = '<line x1="14" y1="' + y + '" x2="346" y2="' + y + '" stroke="' + gray + '" stroke-width="2"/>';
+    for (let x = 18; x < 346; x += 14) {
+      s += '<line x1="' + x + '" y1="' + y + '" x2="' + (x - 9) + '" y2="' + (y + 11) + '" stroke="' + gray + '" stroke-width="1.2"/>';
+    }
+    return s;
+  };
+  const arrowU = (x, y) =>
+    '<line x1="' + x + '" y1="' + y + '" x2="' + (x + 46) + '" y2="' + y + '" stroke="#b03a2e" stroke-width="2"/>' +
+    '<polygon points="' + (x + 46) + ',' + y + ' ' + (x + 38) + ',' + (y - 5) + ' ' + (x + 38) + ',' + (y + 5) + '" fill="#b03a2e"/>' +
+    '<text x="' + (x + 24) + '" y="' + (y - 8) + '" font-size="11" fill="#b03a2e" text-anchor="middle">u(t)</text>';
+
+  let svg = '<svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<rect width="360" height="240" fill="#f7f9fc"/>';
+
+  if (type === 'portico' || type === 'massa' || type === 'equip') {
+    svg += ground(200);
+    const xs = [70, 290];
+    xs.forEach(x => { svg += '<rect x="' + (x - 8) + '" y="86" width="16" height="114" fill="' + blue + '" rx="2"/>'; });
+    svg += '<rect x="62" y="72" width="236" height="16" fill="' + navy + '" rx="2"/>';
+    if (type === 'equip') {
+      svg += '<rect x="140" y="30" width="80" height="42" fill="' + cyan + '" rx="3" stroke="' + navy + '" stroke-width="1.5"/>';
+      svg += '<text x="180" y="56" font-size="12" fill="' + navy + '" text-anchor="middle" font-weight="bold">M</text>';
+    } else {
+      svg += '<rect x="130" y="38" width="100" height="34" fill="' + cyan + '" rx="3"/>';
+      svg += '<text x="180" y="60" font-size="12" fill="' + navy + '" text-anchor="middle" font-weight="bold">m</text>';
+    }
+    svg += arrowU(196, 95);
+    svg += '<text x="180" y="222" font-size="11" fill="' + gray + '" text-anchor="middle">colunas: k_i = ' + P.bc + 'EI/L³</text>';
+  } else if (type === 'coluna') {
+    svg += ground(200);
+    svg += '<rect x="172" y="80" width="16" height="120" fill="' + blue + '" rx="2"/>';
+    svg += '<rect x="140" y="46" width="80" height="34" fill="' + cyan + '" rx="3"/>';
+    svg += '<text x="180" y="68" font-size="12" fill="' + navy + '" text-anchor="middle" font-weight="bold">m</text>';
+    svg += arrowU(196, 100);
+    svg += '<text x="180" y="222" font-size="11" fill="' + gray + '" text-anchor="middle">coluna isolada · k = ' + P.bc + 'EI/L³</text>';
+  } else if (type === 'silo') {
+    svg += ground(200);
+    [90, 150, 210, 270].forEach(x => {
+      svg += '<rect x="' + (x - 6) + '" y="120" width="12" height="80" fill="' + blue + '" rx="2"/>';
+    });
+    svg += '<rect x="76" y="46" width="208" height="76" fill="' + cyan + '" rx="6" stroke="' + navy + '" stroke-width="1.5"/>';
+    svg += '<ellipse cx="180" cy="46" rx="104" ry="12" fill="#9dd3ea" stroke="' + navy + '" stroke-width="1.5"/>';
+    svg += '<text x="180" y="92" font-size="13" fill="' + navy + '" text-anchor="middle" font-weight="bold">m (silo + conteúdo)</text>';
+    svg += arrowU(196, 108);
+    svg += '<text x="180" y="222" font-size="11" fill="' + gray + '" text-anchor="middle">' + P.n + ' pilares · K_eq = Σk_i</text>';
+  } else {
+    svg += '<text x="180" y="120" font-size="13" fill="' + gray + '" text-anchor="middle">Sistema equivalente</text>';
+    svg += '<text x="180" y="142" font-size="12" fill="' + gray + '" text-anchor="middle">m · k · c informados diretamente</text>';
+  }
+  svg += '</svg>';
+  return svg;
+}
+
+/* ==========================================================================
+   7. MEMÓRIA DE CÁLCULO
+   ========================================================================== */
+function memoriaHTML(includeImages) {
+  const sys = state.sys, S = state.series, inp = state.input, D = state.derived, M = state.model;
+  if (!sys) return '<p>Execute o cálculo antes de gerar a memória.</p>';
+
+  const now = new Date().toLocaleString('pt-BR');
+  const img = (plot, cap) => {
+    if (!includeImages || !plot || !plot.cv) return '';
+    try {
+      return '<p style="font-size:11.5px;color:#5a6b7b;margin:10px 0 2px">' + esc(cap) + '</p>' +
+             '<img src="' + plot.cv.toDataURL('image/png') + '" alt="' + esc(cap) + '">';
+    } catch (e) { return ''; }
+  };
+
+  let h = '';
+  h += '<h1>Memória de Cálculo — Análise Dinâmica de Estruturas</h1>';
+  h += '<div class="meta">Vibrações Livres · Sistema de Um Grau de Liberdade (SDOF) · ' +
+       'APavan Engenharia e Consultoria · Gerado em ' + esc(now) + '</div>';
+
+  /* 1 */
+  h += '<h2>1. Identificação</h2>';
+  h += '<table><tr><th style="width:35%">Item</th><th>Descrição</th></tr>';
+  h += '<tr><td>Módulo</td><td>Análise dinâmica — vibrações livres SDOF</td></tr>';
+  h += '<tr><td>Modelo</td><td>' + esc(modelTypeLabel($('#mType').value)) + '</td></tr>';
+  h += '<tr><td>Regime identificado</td><td>' + esc(REGIME_LABEL[sys.regime]) + '</td></tr>';
+  h += '<tr><td>Data / hora</td><td>' + esc(now) + '</td></tr>';
+  h += '</table>';
+
+  /* 2 */
+  h += '<h2>2. Modelo estrutural e hipóteses</h2>';
+  h += '<p style="font-size:12.5px;line-height:1.7">Sistema idealizado de um grau de liberdade, com massa concentrada ' +
+       'no nível de análise, rigidez lateral equivalente e amortecimento viscoso linear. ' +
+       'Hipóteses adotadas:</p>';
+  h += '<ul style="font-size:12.5px;line-height:1.7">';
+  h += '<li>Comportamento linear elástico dos materiais e da estrutura.</li>';
+  h += '<li>Pequenos deslocamentos (análise de primeira ordem).</li>';
+  h += '<li>Diafragma rígido no nível do pavimento — massas e deslocamentos concentrados em um único grau de liberdade.</li>';
+  h += '<li>Amortecimento viscoso linear equivalente.</li>';
+  h += '<li>Vibração livre: excitação externa nula após t = 0.</li>';
+  if (M && M.type && M.type !== 'eq') {
+    h += '<li>Rigidez lateral da coluna: k = ' + (M.P ? M.P.bc : '') + '·EI/L³; colunas em paralelo: K_eq = Σk_i.</li>';
+    h += '<li>Massa própria dos pilares desprezada na massa equivalente (verificar quando relevante).</li>';
+  }
+  h += '</ul>';
+
+  /* 3 */
+  h += '<h2>3. Dados de entrada</h2>';
+  h += '<table><tr><th>Grandeza</th><th>Símbolo</th><th style="text-align:right">Valor</th><th>Unidade</th></tr>';
+  h += '<tr><td>Massa equivalente</td><td>m</td><td class="num">' + fmt(inp.m, 4) + '</td><td>kg</td></tr>';
+  h += '<tr><td>Rigidez equivalente</td><td>k</td><td class="num">' + fmt(inp.k, 4) + '</td><td>N/m</td></tr>';
+  h += '<tr><td>Coeficiente de amortecimento</td><td>c</td><td class="num">' + fmt(inp.c, 6) + '</td><td>N·s/m</td></tr>';
+  h += '<tr><td>Deslocamento inicial</td><td>u₀</td><td class="num">' + fmt(inp.u0, 6) + '</td><td>m</td></tr>';
+  h += '<tr><td>Velocidade inicial</td><td>u̇₀</td><td class="num">' + fmt(inp.v0, 6) + '</td><td>m/s</td></tr>';
+  h += '<tr><td>Tempo total de análise</td><td>t_fim</td><td class="num">' + fmt(inp.tTotal, 4) + '</td><td>s</td></tr>';
+  h += '<tr><td>Intervalo de integração</td><td>Δt</td><td class="num">' + fmt(S.dtEff, 6) + '</td><td>s</td></tr>';
+  h += '</table>';
+
+  /* 4 */
+  h += '<h2>4. Propriedades dinâmicas</h2>';
+  h += '<table><tr><th>Grandeza</th><th>Relação</th><th style="text-align:right">Valor</th><th>Unidade</th></tr>';
+  h += '<tr><td>Frequência natural circular</td><td>ω = √(k/m)</td><td class="num">' + fmt(sys.w, 6) + '</td><td>rad/s</td></tr>';
+  h += '<tr><td>Frequência natural</td><td>f = ω/(2π)</td><td class="num">' + fmt(sys.f, 6) + '</td><td>Hz</td></tr>';
+  h += '<tr><td>Período natural</td><td>T = 2π/ω</td><td class="num">' + fmt(sys.T, 6) + '</td><td>s</td></tr>';
+  h += '<tr><td>Amortecimento crítico</td><td>c_cr = 2mω</td><td class="num">' + fmt(sys.ccr, 6) + '</td><td>N·s/m</td></tr>';
+  h += '<tr><td>Razão de amortecimento</td><td>ξ = c/c_cr</td><td class="num">' + fmt(sys.xi, 6) + '</td><td>—</td></tr>';
+  if (sys.regime === 'subamortecido') {
+    h += '<tr><td>Frequência amortecida</td><td>ω_d = ω√(1−ξ²)</td><td class="num">' + fmt(sys.wd, 6) + '</td><td>rad/s</td></tr>';
+    h += '<tr><td>Período amortecido</td><td>T_d = 2π/ω_d</td><td class="num">' + fmt(sys.Td, 6) + '</td><td>s</td></tr>';
+  }
+  if (sys.regime === 'superamortecido') {
+    h += '<tr><td>Parâmetro W</td><td>W = ω√(ξ²−1)</td><td class="num">' + fmt(sys.W, 6) + '</td><td>rad/s</td></tr>';
+  }
+  h += '</table>';
+
+  /* 5 */
+  h += '<h2>5. Equação do movimento e solução</h2>';
+  h += '<div class="eq">m·ü(t) + c·u̇(t) + k·u(t) = 0\n' +
+       fmt(inp.m, 4) + '·ü(t) + ' + fmt(inp.c, 6) + '·u̇(t) + ' + fmt(inp.k, 4) + '·u(t) = 0</div>';
+  h += '<h3>Condições iniciais</h3>';
+  h += '<div class="eq">u(0) = ' + fmt(inp.u0, 6) + ' m\n' +
+       'u̇(0) = ' + fmt(inp.v0, 6) + ' m/s</div>';
+  h += '<h3>Solução analítica adotada — ' + esc(REGIME_LABEL[sys.regime]) + '</h3>';
+  if (sys.regime === 'nao_amortecido') {
+    h += '<div class="eq">u(t) = u₀·cos(ωt) + (u̇₀/ω)·sen(ωt)\n' +
+         'u(t) = ' + fmt(inp.u0, 6) + '·cos(' + fmt(sys.w, 6) + '·t) + ' +
+         fmt(inp.v0 / sys.w, 6) + '·sen(' + fmt(sys.w, 6) + '·t)\n' +
+         'Amplitude: A = √(u₀² + (u̇₀/ω)²) = ' + fmt(D.amp, 6) + ' m</div>';
+  } else if (sys.regime === 'subamortecido') {
+    const B = (inp.v0 + sys.xi * sys.w * inp.u0) / sys.wd;
+    h += '<div class="eq">u(t) = e^(−ξωt)·[u₀·cos(ω_d t) + ((u̇₀ + ξωu₀)/ω_d)·sen(ω_d t)]\n' +
+         'u(t) = e^(−' + fmt(sys.xi * sys.w, 6) + '·t)·[' + fmt(inp.u0, 6) + '·cos(' + fmt(sys.wd, 6) + '·t) + ' +
+         fmt(B, 6) + '·sen(' + fmt(sys.wd, 6) + '·t)]</div>';
+  } else if (sys.regime === 'critico') {
+    h += '<div class="eq">u(t) = [u₀ + (ω·u₀ + u̇₀)·t]·e^(−ωt)\n' +
+         'u(t) = [' + fmt(inp.u0, 6) + ' + ' + fmt(sys.w * inp.u0 + inp.v0, 6) + '·t]·e^(−' + fmt(sys.w, 6) + '·t)</div>';
+  } else {
+    const B = (inp.v0 + sys.xi * sys.w * inp.u0) / sys.W;
+    h += '<div class="eq">u(t) = e^(−ξωt)·[u₀·cosh(Wt) + ((u̇₀ + ξωu₀)/W)·senh(Wt)]\n' +
+         'u(t) = e^(−' + fmt(sys.xi * sys.w, 6) + '·t)·[' + fmt(inp.u0, 6) + '·cosh(' + fmt(sys.W, 6) + '·t) + ' +
+         fmt(B, 6) + '·senh(' + fmt(sys.W, 6) + '·t)]</div>';
+  }
+
+  /* 6 */
+  h += '<h2>6. Resultados</h2>';
+  h += '<table><tr><th>Grandeza</th><th style="text-align:right">Valor</th><th>Unidade</th></tr>';
+  h += '<tr><td>Deslocamento máximo</td><td class="num">' + fmt(D.maxU, 6) + '</td><td>m</td></tr>';
+  h += '<tr><td>Deslocamento mínimo</td><td class="num">' + fmt(D.minU, 6) + '</td><td>m</td></tr>';
+  h += '<tr><td>Amplitude característica</td><td class="num">' + fmt(D.amp, 6) + '</td><td>m</td></tr>';
+  h += '<tr><td>Velocidade máxima</td><td class="num">' + fmt(D.maxV, 6) + '</td><td>m/s</td></tr>';
+  h += '<tr><td>Velocidade mínima</td><td class="num">' + fmt(D.minV, 6) + '</td><td>m/s</td></tr>';
+  h += '<tr><td>Aceleração máxima</td><td class="num">' + fmt(D.maxA, 6) + '</td><td>m/s²</td></tr>';
+  h += '<tr><td>Aceleração mínima</td><td class="num">' + fmt(D.minA, 6) + '</td><td>m/s²</td></tr>';
+  h += '</table>';
+
+  /* 7 */
+  h += '<h2>7. Decremento logarítmico</h2>';
+  if (sys.regime === 'subamortecido') {
+    h += '<div class="eq">δ = 2πξ/√(1−ξ²) = ' + fmt(D.deltaTeo, 8) + '\n' +
+         'δ = ln[u(t)/u(t+nT)]  →  ξ = δ/√(4π² + δ²) = ' + fmt(D.xiFromDelta, 8) + '</div>';
+    if (D.deltaNum != null) {
+      h += '<div class="eq">δ obtido dos picos da resposta = ' + fmt(D.deltaNum, 8) +
+           '  →  ξ = ' + fmt(D.xiFromDeltaNum, 8) + '</div>';
+    }
+  } else {
+    h += '<p style="font-size:12.5px">Não aplicável: o decremento logarítmico é definido para sistemas ' +
+         'subamortecidos (0 &lt; ξ &lt; 1).</p>';
+  }
+
+  /* 8 */
+  h += '<h2>8. Energia</h2>';
+  h += '<div class="eq">E_c(t) = ½·m·u̇²    E_p(t) = ½·k·u²    E(t) = E_c + E_p</div>';
+  h += '<table><tr><th>Grandeza</th><th style="text-align:right">Valor</th><th>Unidade</th></tr>';
+  h += '<tr><td>E(0)</td><td class="num">' + fmt(D.E0, 6) + '</td><td>J</td></tr>';
+  h += '<tr><td>E máxima no intervalo</td><td class="num">' + fmt(D.Emax, 6) + '</td><td>J</td></tr>';
+  h += '<tr><td>E mínima no intervalo</td><td class="num">' + fmt(D.Emin, 6) + '</td><td>J</td></tr>';
+  h += '<tr><td>Variação relativa (Emax − Emin)/E(0)</td><td class="num">' + fmt(D.drift * 100, 4) + '</td><td>%</td></tr>';
+  h += '</table>';
+  h += sys.regime === 'nao_amortecido'
+    ? '<div class="note">Sistema não amortecido: a energia total deve permanecer constante. ' +
+      'Desvio relativo observado de ' + fmt(D.drift * 100, 6) + '% (decorrente da discretização temporal).</div>'
+    : '<div class="note">Sistema amortecido: a energia total decresce pela dissipação viscosa.</div>';
+
+  /* 9 */
+  h += '<h2>9. Gráficos</h2>';
+  h += img(plots.u, 'Figura 1 — Deslocamento u(t)');
+  h += img(plots.v, 'Figura 2 — Velocidade u̇(t)');
+  h += img(plots.a, 'Figura 3 — Aceleração ü(t)');
+  h += img(plots.e, 'Figura 4 — Energia');
+  h += img(plots.cmp, 'Figura 5 — Comparação de amortecimento');
+
+  /* 10 */
+  h += '<h2>10. Verificação numérica</h2>';
+  h += '<p style="font-size:12.5px">Os testes de auditoria (aba 11) executam a verificação da equação do movimento, ' +
+       'a comparação entre a solução analítica e a integração numérica por Runge–Kutta de 4ª ordem, ' +
+       'a conservação de energia (quando aplicável) e a consistência do decremento logarítmico.</p>';
+
+  /* 11 */
+  h += '<h2>11. Conclusões e limitações</h2>';
+  h += '<p style="font-size:12.5px;line-height:1.7">O sistema foi classificado como <b>' +
+       esc(REGIME_LABEL[sys.regime]) + '</b>, com frequência natural de ' + fmt(sys.f, 4) +
+       ' Hz (ω = ' + fmt(sys.w, 4) + ' rad/s) e período natural de ' + fmt(sys.T, 4) + ' s.</p>';
+  h += '<div class="note"><b>Limitações:</b> este módulo trata exclusivamente de vibração livre de sistemas ' +
+       'idealizados de um grau de liberdade. Não realiza análise sísmica, análise modal completa, análise ' +
+       'não linear nem vibração forçada. Não há verificação automática de conformidade normativa. ' +
+       'Estruturas com múltiplos graus de liberdade requerem um módulo MDOF com matrizes de massa, ' +
+       'rigidez e amortecimento. Os resultados são válidos apenas dentro das hipóteses declaradas.</div>';
+
+  h += '<div class="sig"><div>Responsável técnico</div><div>ART / CREA</div><div>Data</div></div>';
+  return h;
+}
+
+function modelTypeLabel(v) {
+  const map = {
+    eq: 'Sistema equivalente massa–mola–amortecedor',
+    portico: 'Pórtico de um pavimento',
+    coluna: 'Coluna isolada com massa no topo',
+    silo: 'Silo apoiado em pilares',
+    massa: 'Massa concentrada sobre estrutura elástica',
+    equip: 'Equipamento sobre estrutura elástica'
+  };
+  return map[v] || v;
+}
+
+function renderMemoria() {
+  $('#memoriaView').innerHTML = memoriaHTML(false);
+}
+
+/* ==========================================================================
+   8. AUDITORIA E VERIFICAÇÃO NUMÉRICA
+   ========================================================================== */
+function runTests() {
+  const out = [];
+  const sys = state.sys, S = state.series, inp = state.input, D = state.derived;
+  if (!sys) {
+    return [{ name: 'Dados insuficientes', status: 'na', detail: 'Execute o cálculo antes de rodar a auditoria.' }];
+  }
+  const fn = responseFn(sys);
+  const scale = Math.max(D.maxAbsU, Math.abs(inp.u0), 1e-12);
+  const vscale = Math.max(Math.abs(D.maxV), Math.abs(D.minV), Math.abs(inp.v0), 1e-12);
+
+  /* T1 — dados de entrada */
+  {
+    const ok = inp.m > 0 && inp.k > 0 && inp.c >= 0 && inp.tTotal > 0 && inp.dt > 0 && inp.dt <= inp.tTotal;
+    out.push({
+      name: 'T1 · Consistência dos dados de entrada',
+      status: ok ? 'ok' : 'fail',
+      detail: 'm = ' + fmt(inp.m, 4) + ' kg · k = ' + fmt(inp.k, 4) + ' N/m · c = ' + fmt(inp.c, 6) +
+              ' N·s/m · t_fim = ' + fmt(inp.tTotal, 3) + ' s · Δt = ' + fmt(S.dtEff, 6) + ' s'
+    });
+  }
+
+  /* T2 — coerência ω, T e f */
+  {
+    const e1 = Math.abs(sys.T - 2 * Math.PI / sys.w) / sys.T;
+    const e2 = Math.abs(sys.f - 1 / sys.T) / sys.f;
+    const e3 = Math.abs(sys.w - 2 * Math.PI * sys.f) / sys.w;
+    const mx = Math.max(e1, e2, e3);
+    out.push({
+      name: 'T2 · Coerência entre ω, T e f',
+      status: mx < 1e-12 ? 'ok' : (mx < 1e-9 ? 'warn' : 'fail'),
+      detail: 'Erro relativo máximo = ' + mx.toExponential(3)
+    });
+  }
+
+  /* T3 — coerência ξ, c e c_cr */
+  {
+    const cCalc = 2 * sys.xi * Math.sqrt(sys.k * sys.m);
+    const err = Math.abs(cCalc - inp.c) / Math.max(Math.abs(inp.c), 1e-12);
+    out.push({
+      name: 'T3 · Coerência entre ξ, c e c_cr',
+      status: err < 1e-9 ? 'ok' : (err < 1e-6 ? 'warn' : 'fail'),
+      detail: 'c calculado a partir de ξ = ' + fmt(cCalc, 8) + ' N·s/m · c informado = ' + fmt(inp.c, 8) +
+              ' N·s/m · erro relativo = ' + err.toExponential(3)
+    });
+  }
+
+  /* T4 — condições iniciais */
+  {
+    const r0 = fn(0);
+    const eu = Math.abs(r0[0] - inp.u0) / scale;
+    const ev = Math.abs(r0[1] - inp.v0) / vscale;
+    const mx = Math.max(eu, ev);
+    out.push({
+      name: 'T4 · Condições iniciais satisfeitas',
+      status: mx < 1e-10 ? 'ok' : (mx < 1e-6 ? 'warn' : 'fail'),
+      detail: 'u(0) = ' + fmt(r0[0], 10) + ' m (esperado ' + fmt(inp.u0, 10) + ') · u̇(0) = ' +
+              fmt(r0[1], 10) + ' m/s (esperado ' + fmt(inp.v0, 10) + ') · erro relativo máx. = ' + mx.toExponential(3)
+    });
+  }
+
+  /* T5 — equação do movimento */
+  {
+    let maxRes = 0;
+    const stride = Math.max(1, Math.floor(S.N / 5000));
+    for (let i = 0; i < S.N; i += stride) {
+      const res = Math.abs(inp.m * S.a[i] + inp.c * S.v[i] + inp.k * S.u[i]);
+      const ref = inp.k * scale;
+      if (res / ref > maxRes) maxRes = res / ref;
+    }
+    out.push({
+      name: 'T5 · Verificação da equação do movimento',
+      status: maxRes < 1e-8 ? 'ok' : (maxRes < 1e-5 ? 'warn' : 'fail'),
+      detail: 'Resíduo máximo normalizado |m·ü + c·u̇ + k·u| / (k·A) = ' + maxRes.toExponential(3)
+    });
+  }
+
+  /* T6 — conservação de energia */
+  if (sys.regime === 'nao_amortecido') {
+    out.push({
+      name: 'T6 · Conservação de energia (ξ = 0)',
+      status: D.drift < 1e-6 ? 'ok' : (D.drift < 1e-3 ? 'warn' : 'fail'),
+      detail: 'Variação relativa (Emax − Emin)/E(0) = ' + (D.drift * 100).toExponential(3) + ' %'
+    });
+  } else {
+    out.push({
+      name: 'T6 · Conservação de energia (ξ = 0)',
+      status: 'na',
+      detail: 'Não aplicável: o sistema possui amortecimento (ξ = ' + fmt(sys.xi, 6) + '); há dissipação viscosa.'
+    });
+  }
+
+  /* T7 — analítico × RK4 */
+  {
+    const nRK = 4000;
+    const dtRK = inp.tTotal / nRK;
+    const rk = rk4(inp.m, inp.k, inp.c, inp.u0, inp.v0, dtRK, nRK);
+    let maxDiff = 0;
+    for (let i = 0; i <= nRK; i++) {
+      const t = i * dtRK;
+      const ua = fn(t)[0];
+      const d = Math.abs(rk.U[i] - ua);
+      if (d > maxDiff) maxDiff = d;
+    }
+    const rel = maxDiff / scale;
+    out.push({
+      name: 'T7 · Solução analítica × numérica (RK4)',
+      status: rel < 1e-3 ? 'ok' : (rel < 1e-2 ? 'warn' : 'fail'),
+      detail: 'Δt_RK4 = ' + dtRK.toExponential(3) + ' s · desvio absoluto máximo = ' + maxDiff.toExponential(3) +
+              ' m · desvio relativo à amplitude = ' + rel.toExponential(3)
+    });
+  }
+
+  /* T8 — decremento logarítmico */
+  if (sys.regime === 'subamortecido' && D.deltaNum != null) {
+    const err = Math.abs(D.deltaNum - D.deltaTeo) / D.deltaTeo;
+    out.push({
+      name: 'T8 · Decremento logarítmico — consistência',
+      status: err < 0.02 ? 'ok' : (err < 0.05 ? 'warn' : 'fail'),
+      detail: 'δ teórico = ' + fmt(D.deltaTeo, 8) + ' · δ dos picos = ' + fmt(D.deltaNum, 8) +
+              ' · erro relativo = ' + (err * 100).toFixed(3) + ' %'
+    });
+  } else {
+    out.push({
+      name: 'T8 · Decremento logarítmico — consistência',
+      status: 'na',
+      detail: 'Não aplicável ao regime ' + REGIME_LABEL[sys.regime] + '.'
+    });
+  }
+
+  /* T9 — inversão do decremento */
+  {
+    const xiTest = 0.07;
+    const d = 2 * Math.PI * xiTest / Math.sqrt(1 - xiTest * xiTest);
+    const back = d / Math.sqrt(4 * Math.PI * Math.PI + d * d);
+    const err = Math.abs(back - xiTest) / xiTest;
+    out.push({
+      name: 'T9 · Inversão do decremento logarítmico',
+      status: err < 1e-12 ? 'ok' : (err < 1e-9 ? 'warn' : 'fail'),
+      detail: 'ξ = ' + xiTest + ' → δ = ' + fmt(d, 10) + ' → ξ recuperado = ' + fmt(back, 12) +
+              ' · erro relativo = ' + err.toExponential(3)
+    });
+  }
+
+  /* T10 — referência não amortecido */
+  {
+    const s = buildSystem(1, 4, 0, 0, 2);         // ω = 2 rad/s; u(t) = sen(2t)
+    const u = responseFn(s)(Math.PI / 4)[0];       // sen(π/2) = 1
+    const err = Math.abs(u - 1);
+    out.push({
+      name: 'T10 · Referência — não amortecido',
+      status: err < 1e-12 ? 'ok' : 'fail',
+      detail: 'm = 1 kg · k = 4 N/m · u₀ = 0 · u̇₀ = 2 m/s → u(t) = sen(2t) · u(π/4) = ' +
+              fmt(u, 12) + ' m (esperado 1) · erro = ' + err.toExponential(3)
+    });
+  }
+
+  /* T11 — referência criticamente amortecido */
+  {
+    const s = buildSystem(1, 1, 2, 1, 0);          // ω = 1; u(t) = (1+t)e^(−t)
+    const u = responseFn(s)(1)[0];
+    const expct = 2 / Math.E;
+    const err = Math.abs(u - expct) / expct;
+    out.push({
+      name: 'T11 · Referência — criticamente amortecido',
+      status: err < 1e-12 ? 'ok' : 'fail',
+      detail: 'm = 1 kg · k = 1 N/m · c = 2 N·s/m · u₀ = 1 · u̇₀ = 0 → u(1) = ' + fmt(u, 12) +
+              ' m (esperado 2/e = ' + fmt(expct, 12) + ') · erro relativo = ' + err.toExponential(3)
+    });
+  }
+
+  /* T12 — resolução temporal */
+  {
+    const Tref = sys.T;
+    const ratio = S.dtEff / Tref;
+    out.push({
+      name: 'T12 · Resolução temporal recomendada (Δt ≤ T/20)',
+      status: ratio <= 0.05 ? 'ok' : (ratio <= 0.10 ? 'warn' : 'fail'),
+      detail: 'Δt / T = ' + ratio.toFixed(5) + ' (Δt = ' + fmt(S.dtEff, 6) + ' s · T = ' + fmt(Tref, 6) + ' s)'
+    });
+  }
+
+  /* T13 — energia inicial */
+  {
+    const E0c = 0.5 * sys.k * inp.u0 * inp.u0 + 0.5 * sys.m * inp.v0 * inp.v0;
+    const err = D.E0 > 0 ? Math.abs(E0c - D.E0) / D.E0 : 0;
+    out.push({
+      name: 'T13 · Energia inicial calculada',
+      status: err < 1e-12 ? 'ok' : 'fail',
+      detail: 'E(0) = ½k·u₀² + ½m·u̇₀² = ' + fmt(E0c, 8) + ' J'
+    });
+  }
+
+  return out;
+}
+
+function renderAuditoria() {
+  const res = runTests();
+  let ok = 0, warn = 0, fail = 0, na = 0;
+  let html = '';
+  for (const t of res) {
+    const cls = t.status === 'ok' ? 'ok' : t.status === 'warn' ? 'warn' : t.status === 'fail' ? 'err' : 'info';
+    const label = t.status === 'ok' ? 'APROVADO' : t.status === 'warn' ? 'ATENÇÃO' :
+                  t.status === 'fail' ? 'REPROVADO' : 'N/A';
+    if (t.status === 'ok') ok++; else if (t.status === 'warn') warn++;
+    else if (t.status === 'fail') fail++; else na++;
+    html += '<div class="test">' +
+            '<span class="badge ' + cls + '" style="flex:0 0 auto">' + label + '</span>' +
+            '<div class="tname">' + esc(t.name) + '<span class="tdet">' + esc(t.detail) + '</span></div>' +
+            '</div>';
+  }
+  $('#auditList').innerHTML = html;
+
+  const box = $('#auditMsg');
+  if (fail > 0) {
+    box.className = 'msg err show';
+    box.textContent = fail + ' teste(s) reprovado(s), ' + warn + ' com atenção, ' + ok + ' aprovado(s), ' +
+                      na + ' não aplicável(is). Verifique a resolução temporal e os dados de entrada.';
+  } else if (warn > 0) {
+    box.className = 'msg warn show';
+    box.textContent = ok + ' teste(s) aprovado(s), ' + warn + ' com atenção, ' + na + ' não aplicável(is). ' +
+                      'Os avisos indicam precisão numérica limitada — recomenda-se reduzir Δt.';
+  } else {
+    box.className = 'msg ok show';
+    box.textContent = ok + ' teste(s) aprovado(s) e ' + na + ' não aplicável(is). Nenhuma inconsistência detectada.';
+  }
+}
+
+/* ==========================================================================
+   9. EXPORTAÇÃO, PERSISTÊNCIA E PWA
+   ========================================================================== */
+const STORAGE_KEY = 'apavan_sdof_v1';
+
+function saveState() {
+  try {
+    const data = {
+      model: {
+        type: $('#mType').value, mat: $('#mMat').value, E: $('#mE').value,
+        sec: $('#mSec').value, bc: $('#mBC').value, b: $('#mB').value,
+        h: $('#mH').value, L: $('#mL').value, d: $('#mD').value, L2: $('#mL2').value,
+        n: $('#mN').value, massMode: $('#mMassMode').value, massVal: $('#mMassVal').value
+      },
+      input: {
+        m: $('#inM').value, uM: $('#uM').value, k: $('#inK').value, uK: $('#uK').value,
+        dampMode: $('#inDampMode').value, c: $('#inC').value, uC: $('#uC').value,
+        xi: $('#inXi').value, u0: $('#inU0').value, uU0: $('#uU0').value,
+        v0: $('#inV0').value, uV0: $('#uV0').value, t: $('#inT').value, dt: $('#inDt').value
+      },
+      xiList: $('#xiList').value
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) { /* armazenamento indisponível */ }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (d.model) {
+      const set = (sel, v) => { if (v !== undefined && $(sel)) $(sel).value = v; };
+      set('#mType', d.model.type); set('#mMat', d.model.mat); set('#mE', d.model.E);
+      set('#mSec', d.model.sec); set('#mBC', d.model.bc); set('#mB', d.model.b);
+      set('#mH', d.model.h); set('#mL', d.model.L); set('#mD', d.model.d);
+      set('#mL2', d.model.L2); set('#mN', d.model.n);
+      set('#mMassMode', d.model.massMode); set('#mMassVal', d.model.massVal);
+    }
+    if (d.input) {
+      const set = (sel, v) => { if (v !== undefined && $(sel)) $(sel).value = v; };
+      set('#inM', d.input.m); set('#uM', d.input.uM); set('#inK', d.input.k); set('#uK', d.input.uK);
+      set('#inDampMode', d.input.dampMode); set('#inC', d.input.c); set('#uC', d.input.uC);
+      set('#inXi', d.input.xi); set('#inU0', d.input.u0); set('#uU0', d.input.uU0);
+      set('#inV0', d.input.v0); set('#uV0', d.input.uV0); set('#inT', d.input.t); set('#inDt', d.input.dt);
+    }
+    if (d.xiList) $('#xiList').value = d.xiList;
+    return true;
+  } catch (e) { return false; }
+}
+
+function exportJSON() {
+  const data = {
+    aplicacao: 'APavan Engenharia — Vibrações Livres SDOF',
+    versao: '1.0',
+    geradoEm: new Date().toISOString(),
+    modelo: state.model || null,
+    entradaSI: state.input,
+    sistema: state.sys ? {
+      omega: state.sys.w, f: state.sys.f, T: state.sys.T,
+      ccr: state.sys.ccr, xi: state.sys.xi, regime: state.sys.regime,
+      wd: state.sys.wd ?? null, Td: state.sys.Td ?? null, W: state.sys.W ?? null
+    } : null,
+    resultados: state.derived || null
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'apavan-sdof-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showMsg('#exportMsg', 'ok', 'Arquivo JSON exportado.');
+}
+
+function exportCSV() {
+  const S = state.series;
+  if (!S) { showMsg('#exportMsg', 'err', 'Execute o cálculo antes de exportar.'); return; }
+  let csv = 't(s);u(m);v(m/s);a(m/s2);Ec(J);Ep(J);E(J)\n';
+  const stride = Math.max(1, Math.floor(S.N / 50000));
+  for (let i = 0; i < S.N; i += stride) {
+    csv += S.t[i].toFixed(8) + ';' + S.u[i].toExponential(10) + ';' + S.v[i].toExponential(10) + ';' +
+           S.a[i].toExponential(10) + ';' + S.ec[i].toExponential(10) + ';' + S.ep[i].toExponential(10) + ';' +
+           S.et[i].toExponential(10) + '\n';
+  }
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'apavan-sdof-serie.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showMsg('#exportMsg', 'ok', 'Série temporal exportada em CSV.');
+}
+
+function showMsg(sel, cls, text) {
+  const el = $(sel);
+  if (!el) return;
+  el.className = 'msg ' + cls + ' show';
+  el.textContent = text;
+  setTimeout(() => { el.className = 'msg'; el.textContent = ''; }, 6000);
+}
+
+/* ---------- PWA ---------- */
+function setupPWA() {
+  /* ícone gerado em canvas */
+  const makeIcon = (size) => {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const x = c.getContext('2d');
+    x.fillStyle = '#0b2545';
+    x.beginPath();
+    const r = size * 0.2;
+    x.moveTo(r, 0); x.lineTo(size - r, 0); x.quadraticCurveTo(size, 0, size, r);
+    x.lineTo(size, size - r); x.quadraticCurveTo(size, size, size - r, size);
+    x.lineTo(r, size); x.quadraticCurveTo(0, size, 0, size - r);
+    x.lineTo(0, r); x.quadraticCurveTo(0, 0, r, 0); x.fill();
+    x.strokeStyle = '#4fb3d9'; x.lineWidth = size * 0.055; x.lineJoin = 'round';
+    x.beginPath();
+    x.moveTo(size * 0.24, size * 0.78);
+    x.lineTo(size * 0.5, size * 0.22);
+    x.lineTo(size * 0.76, size * 0.78);
+    x.stroke();
+    x.strokeStyle = '#ffffff'; x.lineWidth = size * 0.05; x.lineCap = 'round';
+    x.beginPath(); x.moveTo(size * 0.35, size * 0.60); x.lineTo(size * 0.65, size * 0.60); x.stroke();
+    return c.toDataURL('image/png');
+  };
+
+  const icon192 = makeIcon(192);
+  const icon512 = makeIcon(512);
+
+  const manifest = {
+    name: 'APavan Engenharia — Vibrações Livres SDOF',
+    short_name: 'APavan SDOF',
+    description: 'Análise dinâmica de estruturas — vibrações livres de sistemas de um grau de liberdade.',
+    start_url: '.',
+    scope: '.',
+    display: 'standalone',
+    orientation: 'any',
+    background_color: '#eef2f6',
+    theme_color: '#0b2545',
+    lang: 'pt-BR',
+    icons: [
+      { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+    ]
+  };
+
+  const mLink = document.getElementById('manifest-link');
+  mLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+  document.getElementById('appleIcon').href = icon192;
+
+  /* instalação */
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const b = document.getElementById('btnInstall');
+    b.style.display = 'inline-block';
+    b.onclick = async () => {
+      b.style.display = 'none';
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    };
+  });
+
+  /* service worker (opcional) */
+  const status = document.getElementById('pwaStatus');
+  let swMsg = '';
+  if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => { swMsg = 'Service worker registrado — o aplicativo está disponível offline após o primeiro carregamento.'; refresh(); })
+      .catch(() => { swMsg = ''; refresh(); });
+  }
+  function refresh() {
+    const installed = window.matchMedia('(display-mode: standalone)').matches ||
+                      window.navigator.standalone === true;
+    status.innerHTML =
+      '<b>Estado:</b> ' + (installed ? 'executando como aplicativo instalado.' : 'executando no navegador.') + '<br>' +
+      '<b>Offline:</b> todos os recursos (HTML, CSS, JavaScript e gráficos) são embarcados neste único arquivo; ' +
+      'após o carregamento, o módulo funciona sem conexão.' +
+      (swMsg ? '<br><b>Cache:</b> ' + swMsg : '<br><b>Cache:</b> para instalação PWA completa com cache explícito, ' +
+        'sirva este arquivo via HTTP e adicione um arquivo <code>sw.js</code> no mesmo diretório.') +
+      '<br><b>Dados:</b> as entradas são salvas automaticamente no armazenamento local do dispositivo.';
+  }
+  refresh();
+}
+
+/* ==========================================================================
+   10. INICIALIZAÇÃO E EVENTOS
+   ========================================================================== */
+function bindEvents() {
+  /* abas */
+  $$('#tabsNav button').forEach(btn => {
+    btn.addEventListener('click', () => showTab(btn.dataset.tab));
+  });
+
+  /* modelagem */
+  ['#mType', '#mMat', '#mE', '#mSec', '#mBC', '#mB', '#mH', '#mL', '#mD', '#mL2',
+   '#mN', '#mMassMode', '#mMassVal'].forEach(sel => {
+    const el = $(sel);
+    if (el) el.addEventListener('input', () => { updateModel(); saveState(); });
+    if (el) el.addEventListener('change', () => { updateModel(); saveState(); });
+  });
+
+  $('#mMat').addEventListener('change', () => {
+    const v = $('#mMat').value;
+    if (v !== 'custom') $('#mE').value = v;
+    updateModel(); saveState();
+  });
+
+  $('#btnApplyModel').addEventListener('click', () => {
+    const M = state.model;
+    if (!M || M.type === 'eq') {
+      showMsg('#modelMsg', 'err', 'Selecione um modelo estrutural válido (diferente de "Sistema equivalente").');
+      return;
+    }
+    if (!isFinite(M.K) || M.K <= 0) {
+      showMsg('#modelMsg', 'err', 'Rigidez equivalente não pôde ser calculada. Verifique material, seção e altura.');
+      return;
+    }
+    if (!isFinite(M.m) || M.m <= 0) {
+      showMsg('#modelMsg', 'err', 'Massa participante não informada corretamente.');
+      return;
+    }
+    const uK = $('#uK').value;
+    $('#inK').value = +(M.K / UNIT_STIFF[uK]).toFixed(6);
+    const uM = $('#uM').value;
+    $('#inM').value = +(M.m / UNIT_MASS[uM]).toFixed(6);
+    showMsg('#modelMsg', 'ok', 'm = ' + fmt(M.m, 3) + ' kg e k = ' + fmt(M.K, 3) + ' N/m transferidos para Dados de entrada.');
+    compute();
+    saveState();
+  });
+
+  /* dados de entrada */
+  $('#inDampMode').addEventListener('change', () => {
+    const isC = $('#inDampMode').value === 'c';
+    $('#grpC').style.display = isC ? 'flex' : 'none';
+    $('#grpXi').style.display = isC ? 'none' : 'flex';
+    compute(); saveState();
+  });
+
+  let debounce = null;
+  ['#inM', '#uM', '#inK', '#uK', '#inC', '#uC', '#inXi', '#inU0', '#uU0',
+   '#inV0', '#uV0', '#inT', '#inDt'].forEach(sel => {
+    const el = $(sel);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(() => { compute(); saveState(); }, 320);
+    });
+    el.addEventListener('change', () => { compute(); saveState(); });
+  });
+
+  $('#btnCalc').addEventListener('click', () => { compute(); saveState(); });
+  $('#btnReset').addEventListener('click', () => {
+    if (!confirm('Restaurar todos os dados de entrada para os valores padrão?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  });
+
+  /* exportação PNG dos gráficos */
+  $$('[data-png]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const map = { u: [plots.u, 'deslocamento'], v: [plots.v, 'velocidade'],
+                    a: [plots.a, 'aceleracao'], cmp: [plots.cmp, 'comparacao-amortecimento'],
+                    e: [plots.e, 'energia'] };
+      const item = map[btn.dataset.png];
+      if (item && item[0]) item[0].toPNG('apavan-' + item[1] + '.png');
+    });
+  });
+
+  /* amortecimento — lista de ξ */
+  $('#xiList').addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => { renderAmortecimento(); saveState(); }, 320);
+  });
+
+  /* decremento logarítmico experimental */
+  $('#btnLD').addEventListener('click', () => {
+    const u1 = num('#ldU1'), u2 = num('#ldU2'), n = Math.round(num('#ldN'));
+    const out = $('#ldOut');
+    if (!isFinite(u1) || !isFinite(u2) || u1 <= 0 || u2 <= 0 || !isFinite(n) || n < 1) {
+      showMsg('#ldMsg', 'err', 'Informe amplitudes positivas e um número inteiro de ciclos ≥ 1.');
+      return;
+    }
+    if (u1 <= u2) {
+      showMsg('#ldMsg', 'err', 'A amplitude inicial deve ser maior que a amplitude final (decaimento).');
+      return;
+    }
+    const delta = Math.log(u1 / u2) / n;
+    const xi = delta / Math.sqrt(4 * Math.PI * Math.PI + delta * delta);
+    out.textContent =
+      'δ_n = ln(u₁/u₁₊ₙ)/n = ln(' + fmt(u1, 6) + '/' + fmt(u2, 6) + ')/' + n + ' = ' + fmt(delta, 8) + '\n' +
+      'ξ = δ/√(4π² + δ²) = ' + fmt(xi, 8) + '\n' +
+      'ξ ≈ ' + (xi * 100).toFixed(3) + ' % do amortecimento crítico';
+    showMsg('#ldMsg', 'ok', 'Decremento logarítmico e razão de amortecimento calculados.');
+  });
+
+  /* memória / PDF */
+  $('#btnPDF').addEventListener('click', () => {
+    if (!state.sys) { alert('Execute o cálculo antes de gerar o PDF.'); return; }
+    $('#printArea').innerHTML = memoriaHTML(true);
+    window.print();
+  });
+  $('#btnRefreshMem').addEventListener('click', renderMemoria);
+
+  /* auditoria */
+  $('#btnAudit').addEventListener('click', renderAuditoria);
+
+  /* exportação */
+  $('#btnExportJSON').addEventListener('click', exportJSON);
+  $('#btnExportCSV').addEventListener('click', exportCSV);
+  $('#btnImportJSON').addEventListener('click', () => $('#fileJSON').click());
+  $('#fileJSON').addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const d = JSON.parse(rd.result);
+        if (d.entradaSI) {
+          const e2 = d.entradaSI;
+          const uK = $('#uK').value, uM = $('#uM').value;
+          $('#inK').value = +(e2.k / UNIT_STIFF[uK]).toFixed(6);
+          $('#inM').value = +(e2.m / UNIT_MASS[uM]).toFixed(6);
+          $('#inDampMode').value = 'c';
+          $('#grpC').style.display = 'flex';
+          $('#grpXi').style.display = 'none';
+          $('#inC').value = +(e2.c / UNIT_DAMP[$('#uC').value]).toFixed(8);
+          $('#inU0').value = +(e2.u0 / UNIT_DISP[$('#uU0').value]).toFixed(8);
+          $('#inV0').value = +(e2.v0 / UNIT_VEL[$('#uV0').value]).toFixed(8);
+          $('#inT').value = e2.tTotal;
+          $('#inDt').value = e2.dt;
+          compute(); saveState();
+          showMsg('#exportMsg', 'ok', 'Dados importados com sucesso.');
+        } else {
+          showMsg('#exportMsg', 'err', 'Arquivo JSON sem o campo "entradaSI".');
+        }
+      } catch (err) {
+        showMsg('#exportMsg', 'err', 'Falha ao ler o arquivo JSON: ' + err.message);
+      }
+    };
+    rd.readAsText(f);
+    e.target.value = '';
+  });
+
+  $('#btnClear').addEventListener('click', () => {
+    if (!confirm('Remover todos os dados salvos neste dispositivo?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    showMsg('#exportMsg', 'ok', 'Dados locais removidos.');
+  });
+
+  /* redimensionamento */
+  window.addEventListener('resize', () => {
+    Object.values(plots).forEach(p => p._resize());
+  });
+}
+
+function showTab(id) {
+  $$('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + id));
+  $$('#tabsNav button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+
+  if (id === 'memoria') renderMemoria();
+  if (id === 'auditoria') renderAuditoria();
+
+  requestAnimationFrame(() => {
+    Object.values(plots).forEach(p => p._resize());
+  });
+}
+
+/* ---------- bootstrap ---------- */
+(function init() {
+  /* gráficos */
+  plots.u = new Plot(document.getElementById('cvU'));
+  plots.v = new Plot(document.getElementById('cvV'));
+  plots.a = new Plot(document.getElementById('cvA'));
+  plots.cmp = new Plot(document.getElementById('cvCmp'));
+  plots.e = new Plot(document.getElementById('cvE'));
+
+  bindEvents();
+  setupPWA();
+
+  const restored = loadState();
+  if ($('#inDampMode').value === 'c') {
+    $('#grpC').style.display = 'flex';
+    $('#grpXi').style.display = 'none';
+  }
+
+  updateModel();
+  compute(true);
+
+  if (restored) {
+    showMsg('#inputMsg', 'ok', 'Dados anteriores restaurados do armazenamento local.');
+    setTimeout(() => { const el = $('#inputMsg'); el.className = 'msg'; el.textContent = ''; }, 4000);
+  }
+})();
 </script>
-</head>
-<body class="min-h-screen flex flex-col items-center py-8 px-4">
-    
-    <!-- Background Fixed -->
-    <div class="fixed inset-0 z-[-1] bg-main">
-        <div class="absolute inset-0 bg-black/85 backdrop-blur-sm"></div>
-    </div>
-
-    <!-- Main Container -->
-    <main id="app-container" class="w-full max-w-md glass rounded-[3rem] p-8 shadow-2xl opacity-0 translate-y-10 animate-slide-up">
-        
-        <!-- Profile Header -->
-        <div class="flex flex-col items-center text-center mb-10">
-            <div class="relative mb-6">
-                <div class="absolute -inset-2 bg-premiumGold rounded-full blur opacity-20"></div>
-                <div class="relative w-36 h-36 rounded-full border-[3px] border-premiumGold overflow-hidden shadow-2xl p-1 bg-black">
-                    <img src="foto.jpg" alt="Ademilton Pavan" class="w-full h-full object-cover rounded-full">
-                </div>
-                <div class="absolute bottom-1 right-1 bg-premiumGold w-9 h-9 rounded-full flex items-center justify-center border-4 border-black shadow-xl">
-                    <i class="fa-solid fa-shield-halved text-black text-xs"></i>
-                </div>
-            </div>
-            <h1 class="text-2xl font-black text-white mb-1 tracking-tight uppercase italic">Ademilton Pavan</h1>
-            <h2 class="text-[10px] font-bold text-premiumGold uppercase tracking-[0.3em] mb-1">Engenheiro de Segurança do Trabalho</h2>
-            <p class="text-white/40 text-[9px] font-black tracking-widest uppercase">CREA-SC 86959-8</p>
-        </div>
-
-        <!-- Action Grid -->
-        <div class="grid grid-cols-2 gap-4">
-            <a href="https://api.whatsapp.com/send?phone=5548999862981&text=Olá Ademilton, gostaria de uma consultoria em SST." target="_blank" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#25D366] shadow-lg group-hover:scale-110 transition-transform">
-                    <i class="fa-brands fa-whatsapp text-white text-xl"></i>
-                </div>
-                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">WhatsApp</span>
-            </a>
-            <a href="https://maps.app.goo.gl/6znCJWxwKk97GeS88" target="_blank" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#4285F4] shadow-lg group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-location-dot text-white text-xl"></i>
-                </div>
-                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">Localização</span>
-            </a>
-            <a href="mailto:apavaneng@gmail.com" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#EA4335] shadow-lg group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-envelope text-white text-xl"></i>
-                </div>
-                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">E-mail</span>
-            </a>
-            <button onclick="toggleModal('modal-nrs', true)" class="group flex flex-col items-center justify-center p-4 rounded-3xl bg-white/5 border border-white/10 transition-all hover:bg-white/10 active:scale-95">
-                <div class="w-12 h-12 flex items-center justify-center rounded-2xl mb-2 bg-[#D4AF37] shadow-lg group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-book-open-reader text-white text-xl"></i>
-                </div>
-                <span class="text-[11px] font-semibold text-white/90 uppercase tracking-wider">Normas NRs</span>
-            </button>
-        </div>
-
-        <!-- Save Contact Button -->
-        <button onclick="downloadVCard()" class="w-full mt-6 mb-8 py-5 bg-premiumGold text-black font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-premiumGold/20 active:scale-95 transition-all text-[11px] tracking-widest uppercase">
-            <i class="fa-solid fa-address-book text-lg"></i>
-            Salvar Contato
-        </button>
-
-        <!-- Services Section Header -->
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-[10px] font-black text-premiumGold uppercase tracking-[0.3em] flex items-center gap-2">
-                <span class="w-8 h-[2px] bg-premiumGold/40"></span>
-                Serviços Especializados
-            </h3>
-            <button onclick="toggleModal('modal-form', true)" class="text-[9px] bg-white/10 hover:bg-premiumGold hover:text-black text-white px-4 py-2 rounded-full transition-all border border-white/10 font-black uppercase">
-                <i class="fa-solid fa-plus mr-1"></i> Add
-            </button>
-        </div>
-
-        <!-- Services List Container -->
-        <div id="services-list" class="space-y-4">
-            <!-- Services will be injected here via JS -->
-        </div>
-        
-        <!-- Footer Info -->
-        <div class="mt-12 text-center opacity-30">
-            <p class="text-[8px] uppercase tracking-[0.4em] font-bold">Tecnologia & Segurança do Trabalho</p>
-        </div>
-    </main>
-
-    <!-- Modal: Normas NRs & Checklist -->
-    <div id="modal-nrs" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 animate-fade-in">
-        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="toggleModal('modal-nrs', false)"></div>
-        <div class="relative w-full max-w-md bg-neutral-950 border border-white/10 rounded-[3rem] p-8 max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-            
-            <div id="nr-header" class="flex justify-between items-center mb-6 relative z-10">
-                <div>
-                    <h2 id="nr-title" class="text-xl font-black text-white uppercase italic tracking-tight">Normas NRs</h2>
-                    <p id="nr-subtitle" class="text-[10px] text-premiumGold font-bold uppercase tracking-widest mt-1">Biblioteca Técnica SST</p>
-                </div>
-                <button onclick="toggleModal('modal-nrs', false)" class="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/40 hover:bg-white/10 transition-colors">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-
-            <div id="nr-progress-container" class="mb-6 hidden animate-fade-in">
-                <div class="flex justify-between items-end mb-2">
-                    <h3 id="checklist-nr-name" class="text-lg font-black text-white uppercase italic">Checklist</h3>
-                    <span id="checklist-progress-text" class="text-[10px] font-bold text-premiumGold">0% CONCLUÍDO</span>
-                </div>
-                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                    <div id="checklist-progress-bar" class="h-full bg-premiumGold shadow-[0_0_15px_rgba(212,175,55,0.5)] transition-all duration-500 ease-out" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div id="nr-content" class="flex-1 overflow-y-auto no-scrollbar relative space-y-3">
-                <!-- NR List or Checklist injected here -->
-            </div>
-
-            <div class="mt-6 pt-4 border-t border-white/5 text-center shrink-0">
-                <p class="text-[8px] text-white/20 uppercase tracking-[0.3em]">Auditoria & Inspeção Técnica</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Adicionar Serviço -->
-    <div id="modal-form" class="fixed inset-0 z-[150] hidden items-center justify-center p-4 animate-fade-in">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="toggleModal('modal-form', false)"></div>
-        <div class="relative w-full max-w-md bg-neutral-900 border border-white/10 rounded-[3rem] p-8 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
-            <h2 class="text-xl font-black text-premiumGold mb-8 uppercase italic">Novo Serviço</h2>
-            <form id="service-form" class="space-y-6">
-                <input required id="form-title" placeholder="Título do Serviço" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white focus:border-premiumGold outline-none">
-                <textarea required id="form-desc" rows="3" placeholder="Descrição detalhada..." class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white focus:border-premiumGold outline-none"></textarea>
-                <div class="grid grid-cols-2 gap-4">
-                    <input id="form-nr" placeholder="Norma (ex: NR-35)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm text-white outline-none">
-                    <div class="relative h-full border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center bg-white/5">
-                        <input type="file" accept="image/*" id="form-image" class="absolute inset-0 opacity-0 cursor-pointer">
-                        <span id="image-label" class="text-[10px] font-black uppercase text-white/30">Anexar Foto</span>
-                    </div>
-                </div>
-                <button type="submit" class="w-full py-5 bg-premiumGold text-black font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-xl">Publicar Serviço</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal: Detalhes do Serviço -->
-    <div id="modal-detail" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 animate-fade-in">
-        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="toggleModal('modal-detail', false)"></div>
-        <div class="relative w-full max-w-md bg-neutral-950 border border-white/10 rounded-[3rem] p-8 max-h-[85vh] overflow-y-auto no-scrollbar shadow-2xl">
-            <button onclick="toggleModal('modal-detail', false)" class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full bg-white/5 text-white/40 z-10">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-            <div id="detail-content">
-                <!-- Detail content injected here -->
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- DATA ---
-        let services = [];
-        let checkedItems = new Set();
-        let selectedNR = null;
-        let base64Image = '';
-
-        const nrs = [
-            { number: '01', title: 'GRO - Gerenciamento de Riscos Ocupacionais' },
-            { number: '06', title: 'EPI - Equipamentos de Proteção Individual' },
-            { number: '10', title: 'Segurança em Eletricidade' },
-            { number: '12', title: 'Máquinas e Equipamentos' },
-            { number: '18', title: 'Segurança na Indústria da Construção' },
-            { number: '33', title: 'Espaços Confinados' },
-            { number: '35', title: 'Trabalho em Altura' },
-            { number: '07', title: 'PCMSO - Controle Médico' },
-            { number: '09', title: 'Avaliação de Exposições Ocupacionais' },
-        ];
-
-        const checklists = {
-            '01': ['Inventário de Riscos atualizado?', 'Plano de Ação definido?', 'Preparação para emergências?', 'Trabalhadores treinados no GRO?'],
-            '06': ['CA válido para todos os EPIs?', 'Registro de entrega por trabalhador?', 'Treinamento de uso realizado?', 'EPIs adequados ao risco?'],
-            '10': ['Prontuário de Instalações Elétricas?', 'Diagramas unifilares atualizados?', 'Trabalhadores com curso NR-10?', 'Aterramento presente?'],
-            '12': ['Parada de emergência operacional?', 'Zonas de perigo protegidas?', 'Manuais em português?', 'Capacitação específica para operador?'],
-            '18': ['PGR da obra implementado?', 'Áreas de vivência adequadas?', 'Proteção coletiva instalada?', 'Treinamento admissional realizado?'],
-            '33': ['PET emitida?', 'Vigia posicionado fora?', 'Monitoramento atmosférico?', 'Equipamentos de resgate prontos?'],
-            '35': ['Análise de Risco assinada?', 'Pontos de ancoragem inspecionados?', 'Cinto paraquedista em uso?', 'ASO com aptidão para altura?']
-        };
-
-        const defaultServices = [
-            { id: '1', title: 'Gestão de PGR / PCMSO', description: 'Implementação técnica completa do Programa de Gerenciamento de Riscos conforme NR-01.', nrReference: 'NR-01 / NR-07', image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=800' },
-            { id: '2', title: 'Treinamento de Altura', description: 'Capacitação teórica e prática com certificação para trabalho em altura.', nrReference: 'NR-35', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&q=80&w=800' }
-        ];
-
-        // --- CORE LOGIC ---
-        function init() {
-            const saved = localStorage.getItem('pavan_sst_services');
-            services = saved ? JSON.parse(saved) : defaultServices;
-            renderServices();
-            renderNRList();
-        }
-
-        function toggleModal(id, show) {
-            const modal = document.getElementById(id);
-            if (show) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            } else {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                if (id === 'modal-nrs') resetNRModal();
-            }
-        }
-
-        // --- SERVICES MANAGEMENT ---
-        function renderServices() {
-            const list = document.getElementById('services-list');
-            list.innerHTML = services.map(s => `
-                <div class="service-card relative p-5 rounded-[2rem] bg-white/5 border border-white/5 flex gap-4 items-center cursor-pointer hover:bg-white/10 transition-all active:scale-[0.98]" onclick="showDetail('${s.id}')">
-                    <div class="w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 border border-white/10">
-                        <img src="${s.image}" class="w-full h-full object-cover" alt="${s.title}">
-                    </div>
-                    <div class="flex-1">
-                        <span class="text-[8px] font-black text-premiumGold uppercase tracking-tighter mb-1 block">${s.nrReference}</span>
-                        <h4 class="text-xs font-bold text-white mb-0.5 leading-tight">${s.title}</h4>
-                        <p class="text-[10px] text-white/40 line-clamp-1 italic">Toque para detalhes</p>
-                    </div>
-                    <button onclick="event.stopPropagation(); deleteService('${s.id}')" class="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 text-white/20 hover:text-red-500 transition-colors">
-                        <i class="fa-solid fa-trash-can text-sm"></i>
-                    </button>
-                </div>
-            `).join('');
-            localStorage.setItem('pavan_sst_services', JSON.stringify(services));
-        }
-
-        function deleteService(id) {
-            if (confirm('Deseja remover este serviço?')) {
-                services = services.filter(s => s.id !== id);
-                renderServices();
-            }
-        }
-
-        function showDetail(id) {
-            const s = services.find(x => x.id === id);
-            if (!s) return;
-            const container = document.getElementById('detail-content');
-            container.innerHTML = `
-                <div class="relative w-full h-48 rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/10">
-                    <img src="${s.image}" class="w-full h-full object-cover" alt="${s.title}">
-                    <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 to-transparent"></div>
-                </div>
-                <span class="text-[10px] font-black text-premiumGold uppercase tracking-[0.3em] mb-3 block">${s.nrReference} • Especialidade</span>
-                <h2 class="text-xl font-black text-white mb-4 leading-tight">${s.title}</h2>
-                <p class="text-sm text-white/60 leading-relaxed font-light italic mb-10">"${s.description}"</p>
-                <a href="https://api.whatsapp.com/send?phone=5548999862981&text=Olá Engenheiro, orçamento para: ${s.title}" target="_blank" class="w-full py-5 bg-premiumGold text-black font-black rounded-3xl flex items-center justify-center gap-3 uppercase text-[10px] tracking-widest shadow-xl">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Solicitar Orçamento
-                </a>
-            `;
-            toggleModal('modal-detail', true);
-        }
-
-        // --- FORM HANDLING ---
-        document.getElementById('form-image').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    base64Image = ev.target.result;
-                    document.getElementById('image-label').innerText = "Foto OK";
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        document.getElementById('service-form').onsubmit = function(e) {
-            e.preventDefault();
-            const newService = {
-                id: Date.now().toString(),
-                title: document.getElementById('form-title').value,
-                description: document.getElementById('form-desc').value,
-                nrReference: document.getElementById('form-nr').value || 'SST',
-                image: base64Image || 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=400'
-            };
-            services.unshift(newService);
-            renderServices();
-            toggleModal('modal-form', false);
-            this.reset();
-            base64Image = '';
-            document.getElementById('image-label').innerText = "Anexar Foto";
-        };
-
-        // --- NR MODAL & CHECKLIST ---
-        function renderNRList() {
-            const content = document.getElementById('nr-content');
-            content.innerHTML = nrs.map(nr => `
-                <button onclick="openChecklist('${nr.number}')" class="w-full text-left p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-4 items-center group hover:bg-white/10 hover:border-premiumGold/30 transition-all active:scale-95">
-                    <div class="w-12 h-12 rounded-xl bg-premiumGold/10 border border-premiumGold/20 flex items-center justify-center flex-shrink-0 group-hover:bg-premiumGold group-hover:text-black transition-colors">
-                        <span class="text-sm font-black text-premiumGold group-hover:text-black">NR-${nr.number}</span>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-[11px] text-white/70 leading-snug font-medium uppercase tracking-tight group-hover:text-white transition-colors">${nr.title}</p>
-                        ${checklists[nr.number] ? '<span class="text-[8px] text-premiumGold font-bold uppercase tracking-widest mt-1 block">Possui Checklist Técnico</span>' : ''}
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-white/10 group-hover:text-premiumGold transition-colors text-xs"></i>
-                </button>
-            `).join('');
-        }
-
-        function openChecklist(nrNum) {
-            selectedNR = nrs.find(n => n.number === nrNum);
-            const items = checklists[nrNum];
-            if (!items) {
-                alert('Checklist em desenvolvimento para esta norma.');
-                return;
-            }
-
-            document.getElementById('nr-title').innerHTML = `
-                <button onclick="resetNRModal()" class="flex items-center gap-2 text-premiumGold group">
-                    <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
-                    <span class="text-[10px] font-black uppercase tracking-widest">Voltar</span>
-                </button>
-            `;
-            document.getElementById('nr-subtitle').classList.add('hidden');
-            document.getElementById('nr-progress-container').classList.remove('hidden');
-            document.getElementById('checklist-nr-name').innerText = `NR-${nrNum}`;
-            
-            renderChecklistItems(nrNum);
-            updateProgress(nrNum);
-        }
-
-        function renderChecklistItems(nrNum) {
-            const items = checklists[nrNum];
-            const content = document.getElementById('nr-content');
-            content.innerHTML = items.map((task, idx) => {
-                const id = `chk-${nrNum}-${idx}`;
-                const checked = checkedItems.has(id);
-                return `
-                    <div onclick="toggleCheck('${id}', '${nrNum}')" class="p-5 rounded-2xl border transition-all cursor-pointer flex gap-4 items-start ${checked ? 'bg-premiumGold/10 border-premiumGold/40' : 'bg-white/5 border-white/5 hover:bg-white/10'}">
-                        <div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-all ${checked ? 'bg-premiumGold border-premiumGold' : 'border-white/20'}">
-                            ${checked ? '<i class="fa-solid fa-check text-black text-[10px]"></i>' : ''}
-                        </div>
-                        <p class="text-[12px] leading-relaxed font-medium transition-colors ${checked ? 'text-white' : 'text-white/60'}">${task}</p>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function toggleCheck(id, nrNum) {
-            if (checkedItems.has(id)) checkedItems.delete(id);
-            else checkedItems.add(id);
-            renderChecklistItems(nrNum);
-            updateProgress(nrNum);
-        }
-
-        function updateProgress(nrNum) {
-            const total = checklists[nrNum].length;
-            const checked = checklists[nrNum].filter((_, i) => checkedItems.has(`chk-${nrNum}-${i}`)).length;
-            const percent = Math.round((checked / total) * 100);
-            
-            document.getElementById('checklist-progress-text').innerText = `${percent}% CONCLUÍDO`;
-            document.getElementById('checklist-progress-bar').style.width = `${percent}%`;
-        }
-
-        function resetNRModal() {
-            document.getElementById('nr-title').innerText = "Normas NRs";
-            document.getElementById('nr-subtitle').classList.remove('hidden');
-            document.getElementById('nr-progress-container').classList.add('hidden');
-            renderNRList();
-        }
-
-        // --- UTILS ---
-        function downloadVCard() {
-            const vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:Eng. Ademilton Pavan\nORG:Pavan Engenharia SST\nTITLE:Engenheiro de Segurança do Trabalho\nTEL;TYPE=CELL:+5548999862981\nEMAIL:apavaneng@gmail.com\nNOTE:CREA-SC 86959-8\nEND:VCARD`;
-            const blob = new Blob([vCardData], { type: 'text/vcard' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'Ademilton_Pavan.vcf';
-            link.click();
-        }
-
-        // --- START ---
-        window.onload = init;
-    </script>
 </body>
-
 </html>
